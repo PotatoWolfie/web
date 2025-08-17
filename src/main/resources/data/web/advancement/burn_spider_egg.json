@@ -1,0 +1,28 @@
+{
+  "display": {
+    "icon": {
+      "id": "web:spider_egg"
+    },
+    "title": {
+      "text": "Burn the Nest"
+    },
+    "description": {
+      "text": "Burn a spider egg using a flint and steel"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "minecraft:adventure/kill_a_mob",
+  "criteria": {
+    "burned_spider_egg": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "burned_spider_egg"
+    ]
+  ]
+}

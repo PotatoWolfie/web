@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "prevented=false": {
+      "model": "web:block/spider_egg"
+    },
+    "prevented=true": {
+      "model": "web:block/spider_egg"
+    }
+  }
+}

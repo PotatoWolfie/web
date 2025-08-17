@@ -1,0 +1,21 @@
+{
+  "parent": "minecraft:block/thin_block",
+  "textures": {
+    "particle": "web:block/spider_egg_shells_2",
+    "texture": "web:block/spider_egg_shells_2"
+  },
+  "elements": [
+    {
+      "from": [0, 15, 0],
+      "to": [16, 16, 16],
+      "faces": {
+        "down": {"uv": [0, 0, 16, 16], "texture": "#texture"},
+        "up": {"uv": [0, 0, 16, 16], "texture": "#texture"},
+        "north": {"uv": [0, 0, 16, 1], "texture": "#texture"},
+        "south": {"uv": [0, 0, 16, 1], "texture": "#texture"},
+        "west": {"uv": [0, 0, 16, 1], "texture": "#texture"},
+        "east": {"uv": [0, 0, 16, 1], "texture": "#texture"}
+      }
+    }
+  ]
+}

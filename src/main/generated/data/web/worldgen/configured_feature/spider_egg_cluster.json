@@ -1,0 +1,9 @@
+{
+  "type": "web:spider_egg_cluster",
+  "config": {
+    "egg_chance": 0.6,
+    "max_cluster_size": 15,
+    "min_cluster_size": 10,
+    "nest_spread_radius": 8
+  }
+}
