@@ -17,12 +17,12 @@ public class WebClient implements ClientModInitializer {
 
         EntityModelLayerRegistry.registerModelLayer(WebEntityModelLayers.SPIDER_WEB, SpiderWebModel::getTexturedModelData);
         EntityRendererRegistry.register(WebEntities.SPIDER_WEB, SpiderWebRenderer::new);
+        EntityModelLayerRegistry.registerModelLayer(WebEntityModelLayers.SPIDER_WEB_FLYING, SpiderWebProjectileModel::getTexturedModelData);
+        EntityRendererRegistry.register(WebEntities.SPIDER_WEB_FLYING, SpiderWebProjectileRenderer::new);
 
         EntityModelLayerRegistry.registerModelLayer(WebEntityModelLayers.BABY_SPIDER, BabySpiderModel::getTexturedModelData);
         EntityRendererRegistry.register(WebEntities.BABY_SPIDER, BabySpiderRenderer::new);
 
-        EntityModelLayerRegistry.registerModelLayer(WebEntityModelLayers.SPIDER_WEB_FLYING, SpiderWebProjectileModel::getTexturedModelData);
-        EntityRendererRegistry.register(WebEntities.SPIDER_WEB_FLYING, SpiderWebProjectileRenderer::new);
 
         BlockRenderLayerMap.putBlock(WebBlocks.SPIDER_EGG_SHELLS, BlockRenderLayer.CUTOUT);
 

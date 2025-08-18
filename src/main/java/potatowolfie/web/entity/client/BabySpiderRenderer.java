@@ -4,16 +4,16 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
-import net.minecraft.client.render.entity.state.LivingEntityRenderState;
 import net.minecraft.util.Identifier;
 import potatowolfie.web.entity.custom.BabySpiderEntity;
 
 @Environment(EnvType.CLIENT)
-public class BabySpiderRenderer extends MobEntityRenderer<BabySpiderEntity, LivingEntityRenderState, BabySpiderModel> {
+public class BabySpiderRenderer extends MobEntityRenderer<BabySpiderEntity, BabySpiderRenderState, BabySpiderModel> {
     private static final Identifier TEXTURE = Identifier.ofVanilla("textures/entity/spider/spider.png");
 
     public BabySpiderRenderer(EntityRendererFactory.Context context) {
         super(context, new BabySpiderModel(context.getPart(WebEntityModelLayers.BABY_SPIDER)), 0.4F);
+        this.addFeature(new BabySpiderEyesFeatureRenderer(this));
     }
 
     @Override
@@ -22,17 +22,19 @@ public class BabySpiderRenderer extends MobEntityRenderer<BabySpiderEntity, Livi
     }
 
     @Override
-    public Identifier getTexture(LivingEntityRenderState state) {
+    public Identifier getTexture(BabySpiderRenderState state) {
         return TEXTURE;
     }
 
     @Override
-    public LivingEntityRenderState createRenderState() {
-        return new LivingEntityRenderState();
+    public BabySpiderRenderState createRenderState() {
+        return new BabySpiderRenderState();
     }
 
     @Override
-    public void updateRenderState(BabySpiderEntity spiderEntity, LivingEntityRenderState livingEntityRenderState, float f) {
-        super.updateRenderState(spiderEntity, livingEntityRenderState, f);
+    public void updateRenderState(BabySpiderEntity spiderEntity, BabySpiderRenderState babySpiderRenderState, float f) {
+        super.updateRenderState(spiderEntity, babySpiderRenderState, f);
+        babySpiderRenderState.idleAnimationState.copyFrom(spiderEntity.idleAnimationState);
+        babySpiderRenderState.walkingAnimationState.copyFrom(spiderEntity.walkingAnimationState);
     }
 }

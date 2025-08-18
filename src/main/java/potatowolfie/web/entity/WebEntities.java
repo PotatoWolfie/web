@@ -28,8 +28,8 @@ public class WebEntities {
 
     public static final EntityType<BabySpiderEntity> BABY_SPIDER = Registry.register(Registries.ENTITY_TYPE,
             Identifier.of(Web.MOD_ID, "baby_spider"),
-            EntityType.Builder.<BabySpiderEntity>create(BabySpiderEntity::new, SpawnGroup.MONSTER)
-                    .dimensions(0.9F, 0.5125F)
+            EntityType.Builder.create(BabySpiderEntity::new, SpawnGroup.MONSTER)
+                    .dimensions(0.9F, 0.5125F).maxTrackingRange(32)
                     .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(Web.MOD_ID, "baby_spider"))));
 
     public static void registerModEntities() {

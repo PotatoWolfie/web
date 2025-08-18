@@ -314,7 +314,6 @@ public class SpiderWebEntity extends Entity {
     @Override
     protected void readCustomData(ReadView view) {
         String stateString = view.getString("WebState", "DYING");
-        // Always dying, so no need to change state
         this.webState = WebState.DYING;
         if (!this.getWorld().isClient()) {
             this.dataTracker.set(DATA_ID_STATE, WebState.DYING.ordinal());
@@ -336,7 +335,6 @@ public class SpiderWebEntity extends Entity {
         return false;
     }
 
-    // State and animation getters following Brine pattern
     public float getAgeProgress() {
         return (float) this.age / MAX_AGE;
     }

@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "LivingEntityMixin",
+    "SpiderAnimationMixin",
     "SpiderEntityMixin"
   ],
   "injectors": {
@@ -13,5 +14,7 @@
     "requireAnnotations": true
   },
   "client": [
+    "SpiderModelMixin",
+    "SpiderRendererMixin"
   ]
 }

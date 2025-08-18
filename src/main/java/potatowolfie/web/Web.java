@@ -23,12 +23,11 @@ public class Web implements ModInitializer {
 		WebBlocks.registerModBlocks();
 		WebItems.registerModItems();
 		WebEntities.registerModEntities();
-
-		FabricDefaultAttributeRegistry.register(WebEntities.BABY_SPIDER, BabySpiderEntity.createSpiderAttributes());
-		LOGGER.info("Registered BabySpiderEntity attributes");
-
 		WebFeatures.registerFeatures();
 		WebWorldGeneration.init();
 		WebBiomeModifications.init();
+
+
+		FabricDefaultAttributeRegistry.register(WebEntities.BABY_SPIDER, BabySpiderEntity.createSpiderAttributes());
 	}
 }

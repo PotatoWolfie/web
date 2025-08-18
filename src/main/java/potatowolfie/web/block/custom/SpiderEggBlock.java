@@ -2,8 +2,6 @@ package potatowolfie.web.block.custom;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.mob.SpiderEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.FlintAndSteelItem;
 import net.minecraft.item.ItemStack;
@@ -20,8 +18,9 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
 import potatowolfie.web.advancement.BurnTheNestHandler;
+import potatowolfie.web.entity.WebEntities;
+import potatowolfie.web.entity.custom.BabySpiderEntity;
 
 public class SpiderEggBlock extends Block {
     public static final BooleanProperty PREVENTED = BooleanProperty.of("prevented");
@@ -89,10 +88,10 @@ public class SpiderEggBlock extends Block {
     }
 
     private void hatchEgg(ServerWorld world, BlockPos pos) {
-        SpiderEntity spider = new SpiderEntity(EntityType.SPIDER, world);
-        spider.refreshPositionAndAngles(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5, 0.0F, 0.0F);
+        BabySpiderEntity babySpider = new BabySpiderEntity(WebEntities.BABY_SPIDER, world);
+        babySpider.refreshPositionAndAngles(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5, 0.0F, 0.0F);
 
-        world.spawnEntity(spider);
+        world.spawnEntity(babySpider);
         world.playSound(null, pos, SoundEvents.BLOCK_SNIFFER_EGG_HATCH, SoundCategory.BLOCKS, 1.0F, 1.0F);
         world.removeBlock(pos, false);
     }

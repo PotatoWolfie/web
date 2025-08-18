@@ -1,5 +1,9 @@
 {
   "item.web.spider_egg": "Spider Egg",
   "item.web.spider_egg_shells": "Spider Egg Shells",
-  "item.web.spider_nest": "Spider Nest"
+  "item.web.spider_nest": "Spider Nest",
+
+  "entity.web.spider_web": "Spider Web",
+  "entity.web.spider_web_flying": "Flying Spider Web",
+  "entity.web.baby_spider": "Baby Spider"
 }

@@ -1,8 +1,6 @@
 package potatowolfie.web.entity.custom;
 
-import net.minecraft.entity.EntityData;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.ai.pathing.SpiderNavigation;
@@ -24,6 +22,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
@@ -33,19 +33,37 @@ import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import org.jetbrains.annotations.Nullable;
 
 public class BabySpiderEntity extends HostileEntity {
+    public final AnimationState idleAnimationState = new AnimationState();
+    public final AnimationState walkingAnimationState = new AnimationState();
+
+    private int idleAnimationTimeout = 0;
+    private boolean isIdleAnimationRunning = false;
+    private boolean isWalkingAnimationRunning = false;
+    private boolean animationStartedThisTick = false;
+
+    public enum SpiderState {
+        IDLE,
+        WALKING
+    }
+
+    private static final TrackedData<Integer> DATA_ID_STATE =
+            DataTracker.registerData(BabySpiderEntity.class, TrackedDataHandlerRegistry.INTEGER);
+
+    private SpiderState spiderState = SpiderState.IDLE;
+    private SpiderState previousState = SpiderState.IDLE;
+    private boolean isChangingState = false;
+
     private static final TrackedData<Byte> SPIDER_FLAGS;
     private static final float field_30498 = 0.1F;
 
     private static final TrackedData<Integer> AGE_TICKS;
-    private static final int MIN_MATURE_TIME = 18000;
-    private static final int MAX_MATURE_TIME = 26400;
-    private int matureTime = -1;
+    private static final TrackedData<Integer> MATURE_TIME; // Add this as tracked data
+    private static final int MIN_MATURE_TIME = 18000; // 15 minutes at 20 tps
+    private static final int MAX_MATURE_TIME = 26400; // 22 minutes at 20 tps
 
     public BabySpiderEntity(EntityType<? extends BabySpiderEntity> entityType, World world) {
         super(entityType, world);
@@ -84,6 +102,113 @@ public class BabySpiderEntity extends HostileEntity {
         super.initDataTracker(builder);
         builder.add(SPIDER_FLAGS, (byte)0);
         builder.add(AGE_TICKS, 0);
+        builder.add(MATURE_TIME, -1); // Add this tracker
+        builder.add(DATA_ID_STATE, SpiderState.IDLE.ordinal());
+    }
+
+    private void updateAnimations() {
+        if (this.getWorld().isClient()) {
+            if (this.spiderState == SpiderState.WALKING) {
+                if (!isWalkingAnimationRunning) {
+                    this.walkingAnimationState.start(this.age);
+                    this.isWalkingAnimationRunning = true;
+                    this.isIdleAnimationRunning = false;
+                }
+            }
+            else if (this.spiderState == SpiderState.IDLE) {
+                if (!isIdleAnimationRunning) {
+                    --this.idleAnimationTimeout;
+                    if (this.idleAnimationTimeout <= 0) {
+                        this.idleAnimationTimeout = this.random.nextInt(40) + 80;
+                        this.idleAnimationState.start(this.age);
+                        this.isIdleAnimationRunning = true;
+                        this.isWalkingAnimationRunning = false;
+                    }
+                }
+            }
+
+            if (this.spiderState != SpiderState.IDLE && isIdleAnimationRunning) {
+                this.idleAnimationState.stop();
+                this.isIdleAnimationRunning = false;
+                this.idleAnimationTimeout = 0;
+            }
+            if (this.spiderState != SpiderState.WALKING && isWalkingAnimationRunning) {
+                this.walkingAnimationState.stop();
+                this.isWalkingAnimationRunning = false;
+            }
+        }
+    }
+
+    public SpiderState getSpiderState() {
+        return spiderState;
+    }
+
+    public SpiderState getPreviousState() {
+        return previousState;
+    }
+
+    public void setSpiderState(SpiderState newState) {
+        if (this.spiderState != newState && !isChangingState) {
+            isChangingState = true;
+
+            this.previousState = this.spiderState;
+            this.spiderState = newState;
+
+            if (!this.getWorld().isClient()) {
+                this.dataTracker.set(DATA_ID_STATE, newState.ordinal());
+            } else {
+                startStateAnimation(newState);
+            }
+
+            isChangingState = false;
+        }
+    }
+
+    private void startStateAnimation(SpiderState state) {
+        if (!this.getWorld().isClient() || animationStartedThisTick) return;
+
+        animationStartedThisTick = true;
+
+        switch (state) {
+            case IDLE -> {
+                stopAllAnimations();
+                this.idleAnimationTimeout = this.random.nextInt(40) + 80;
+                this.idleAnimationState.start(this.age);
+                this.isIdleAnimationRunning = true;
+                this.isWalkingAnimationRunning = false;
+            }
+            case WALKING -> {
+                stopAllAnimations();
+                this.walkingAnimationState.start(this.age);
+                this.isWalkingAnimationRunning = true;
+                this.isIdleAnimationRunning = false;
+            }
+        }
+    }
+
+    private void stopAllAnimations() {
+        if (this.getWorld().isClient()) {
+            idleAnimationState.stop();
+            walkingAnimationState.stop();
+        }
+    }
+
+    @Override
+    public void onTrackedDataSet(TrackedData<?> data) {
+        if (DATA_ID_STATE.equals(data) && this.getWorld().isClient()) {
+            SpiderState newState = SpiderState.values()[this.dataTracker.get(DATA_ID_STATE)];
+            if (this.spiderState != newState && !isChangingState) {
+                isChangingState = true;
+
+                this.previousState = this.spiderState;
+                this.spiderState = newState;
+
+                startStateAnimation(newState);
+
+                isChangingState = false;
+            }
+        }
+        super.onTrackedDataSet(data);
     }
 
     private int climbingStateCooldown = 0;
@@ -92,7 +217,13 @@ public class BabySpiderEntity extends HostileEntity {
 
     @Override
     public void tick() {
+        if (this.isRemoved() || this.getWorld() == null) {
+            return;
+        }
+
+        animationStartedThisTick = false;
         super.tick();
+
         if (!this.getWorld().isClient) {
             if (climbingStateCooldown <= 0) {
                 boolean shouldClimb = this.horizontalCollision;
@@ -111,11 +242,36 @@ public class BabySpiderEntity extends HostileEntity {
                 }
             }
 
+            // Update age tracking
             int currentAge = this.dataTracker.get(AGE_TICKS);
             this.dataTracker.set(AGE_TICKS, currentAge + 1);
 
+            // Check for maturation
+            int matureTime = this.dataTracker.get(MATURE_TIME);
             if (matureTime > 0 && currentAge >= matureTime) {
                 this.matureIntoSpider();
+            }
+        }
+
+        try {
+            updateAnimations();
+        } catch (Exception ignored) {
+        }
+    }
+
+    @Override
+    public void tickMovement() {
+        super.tickMovement();
+
+        boolean isMoving = this.getVelocity().horizontalLength() > 0.01;
+
+        if (isMoving) {
+            if (this.spiderState != SpiderState.WALKING) {
+                setSpiderState(SpiderState.WALKING);
+            }
+        } else {
+            if (this.spiderState != SpiderState.IDLE) {
+                setSpiderState(SpiderState.IDLE);
             }
         }
     }
@@ -123,42 +279,65 @@ public class BabySpiderEntity extends HostileEntity {
     private void matureIntoSpider() {
         if (this.getWorld().isClient) return;
 
-        SpiderEntity adultSpider = EntityType.SPIDER.create(this.getWorld(), SpawnReason.CONVERSION);
-        if (adultSpider != null) {
-            adultSpider.refreshPositionAndAngles(
-                    this.getX(), this.getY(), this.getZ(),
-                    this.getYaw(), this.getPitch()
-            );
+        try {
+            SpiderEntity adultSpider = EntityType.SPIDER.create(this.getWorld(), SpawnReason.CONVERSION);
+            if (adultSpider != null) {
+                // Copy position and rotation
+                adultSpider.refreshPositionAndAngles(
+                        this.getX(), this.getY(), this.getZ(),
+                        this.getYaw(), this.getPitch()
+                );
 
-            adultSpider.setVelocity(this.getVelocity());
+                // Copy velocity
+                adultSpider.setVelocity(this.getVelocity());
 
-            float healthPercentage = this.getHealth() / this.getMaxHealth();
-            adultSpider.setHealth(adultSpider.getMaxHealth() * healthPercentage);
+                // Copy health percentage
+                float healthPercentage = this.getHealth() / this.getMaxHealth();
+                adultSpider.setHealth(adultSpider.getMaxHealth() * healthPercentage);
 
-            for (StatusEffectInstance effect : this.getStatusEffects()) {
-                adultSpider.addStatusEffect(new StatusEffectInstance(effect));
-            }
-
-            if (this.hasCustomName()) {
-                adultSpider.setCustomName(this.getCustomName());
-                adultSpider.setCustomNameVisible(this.isCustomNameVisible());
-            }
-
-            if (this.hasPassengers()) {
-                for (Entity passenger : this.getPassengerList()) {
-                    passenger.startRiding(adultSpider);
+                // Copy status effects
+                for (StatusEffectInstance effect : this.getStatusEffects()) {
+                    adultSpider.addStatusEffect(new StatusEffectInstance(effect));
                 }
-            }
 
-            this.getWorld().spawnEntity(adultSpider);
-            this.discard();
+                // Copy name
+                if (this.hasCustomName()) {
+                    adultSpider.setCustomName(this.getCustomName());
+                    adultSpider.setCustomNameVisible(this.isCustomNameVisible());
+                }
+
+                // Handle passengers (like skeleton jockey)
+                if (this.hasPassengers()) {
+                    for (Entity passenger : this.getPassengerList()) {
+                        passenger.stopRiding();
+                        passenger.startRiding(adultSpider);
+                    }
+                }
+
+                // Spawn the adult spider
+                this.getWorld().spawnEntity(adultSpider);
+
+                // Remove this baby spider
+                this.discard();
+            }
+        } catch (Exception e) {
+            // Log the error if you have a logging system
+            System.err.println("Error during spider maturation: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    // Add this method for manual testing
+    public void forceMature() {
+        if (!this.getWorld().isClient) {
+            this.matureIntoSpider();
         }
     }
 
     public static DefaultAttributeContainer.Builder createSpiderAttributes() {
         return HostileEntity.createHostileAttributes()
-                .add(EntityAttributes.MAX_HEALTH, 16.0)
-                .add(EntityAttributes.MOVEMENT_SPEED, 0.3)
+                .add(EntityAttributes.MAX_HEALTH, 10.0)
+                .add(EntityAttributes.MOVEMENT_SPEED, 0.5)
                 .add(EntityAttributes.JUMP_STRENGTH, 0.42);
     }
 
@@ -186,7 +365,6 @@ public class BabySpiderEntity extends HostileEntity {
         if (!state.isOf(Blocks.COBWEB)) {
             super.slowMovement(state, multiplier);
         }
-
     }
 
     public boolean canHaveStatusEffect(StatusEffectInstance effect) {
@@ -213,8 +391,10 @@ public class BabySpiderEntity extends HostileEntity {
     public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
         EntityData result = super.initialize(world, difficulty, spawnReason, entityData);
 
+        // Set the mature time when the entity is initialized
         Random random = world.getRandom();
-        this.matureTime = MIN_MATURE_TIME + random.nextInt(MAX_MATURE_TIME - MIN_MATURE_TIME + 1);
+        int matureTime = MIN_MATURE_TIME + random.nextInt(MAX_MATURE_TIME - MIN_MATURE_TIME + 1);
+        this.dataTracker.set(MATURE_TIME, matureTime);
 
         Random spawnRandom = world.getRandom();
         if (spawnRandom.nextInt(100) == 0) {
@@ -247,9 +427,46 @@ public class BabySpiderEntity extends HostileEntity {
         return vehicle.getWidth() <= this.getWidth() ? new Vec3d(0.0, 0.9125 * (double)this.getScale(), 0.0) : super.getVehicleAttachmentPos(vehicle);
     }
 
+    @Override
+    public void writeCustomData(WriteView nbt) {
+        super.writeCustomData(nbt);
+        nbt.putString("SpiderState", spiderState.name());
+        nbt.putInt("AgeTicks", this.dataTracker.get(AGE_TICKS));
+        nbt.putInt("MatureTime", this.dataTracker.get(MATURE_TIME));
+    }
+
+    @Override
+    public void readCustomData(ReadView nbt) {
+        super.readCustomData(nbt);
+        String stateString = nbt.getString("SpiderState", "IDLE");
+        if (!stateString.equals("IDLE")) {
+            try {
+                SpiderState loadedState = SpiderState.valueOf(stateString);
+                this.spiderState = loadedState;
+                if (!this.getWorld().isClient()) {
+                    this.dataTracker.set(DATA_ID_STATE, loadedState.ordinal());
+                }
+            } catch (IllegalArgumentException e) {
+                this.spiderState = SpiderState.IDLE;
+            }
+        }
+
+        // Use getInt with fallback values instead of contains
+        int ageTicks = nbt.getInt("AgeTicks", 0);
+        if (ageTicks > 0) {
+            this.dataTracker.set(AGE_TICKS, ageTicks);
+        }
+
+        int matureTime = nbt.getInt("MatureTime", -1);
+        if (matureTime > 0) {
+            this.dataTracker.set(MATURE_TIME, matureTime);
+        }
+    }
+
     static {
         SPIDER_FLAGS = DataTracker.registerData(BabySpiderEntity.class, TrackedDataHandlerRegistry.BYTE);
         AGE_TICKS = DataTracker.registerData(BabySpiderEntity.class, TrackedDataHandlerRegistry.INTEGER);
+        MATURE_TIME = DataTracker.registerData(BabySpiderEntity.class, TrackedDataHandlerRegistry.INTEGER);
     }
 
     private static class AttackGoal extends MeleeAttackGoal {
@@ -303,7 +520,6 @@ public class BabySpiderEntity extends HostileEntity {
             } else if (i <= 4) {
                 this.effect = StatusEffects.INVISIBILITY;
             }
-
         }
     }
 }

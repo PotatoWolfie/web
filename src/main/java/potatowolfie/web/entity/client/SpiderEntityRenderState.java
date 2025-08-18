@@ -6,10 +6,10 @@ import net.minecraft.client.render.entity.state.LivingEntityRenderState;
 import net.minecraft.entity.AnimationState;
 
 @Environment(EnvType.CLIENT)
-public class BabySpiderRenderState extends LivingEntityRenderState {
+public class SpiderEntityRenderState extends LivingEntityRenderState {
     public final AnimationState idleAnimationState = new AnimationState();
     public final AnimationState walkingAnimationState = new AnimationState();
 
-    public BabySpiderRenderState() {
+    public SpiderEntityRenderState() {
     }
 }
