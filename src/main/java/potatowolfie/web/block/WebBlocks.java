@@ -15,6 +15,7 @@ import net.minecraft.util.Identifier;
 import potatowolfie.web.Web;
 import potatowolfie.web.block.custom.SpiderEggBlock;
 import potatowolfie.web.block.custom.SpiderEggShellsBlock;
+import potatowolfie.web.block.custom.SpiderWebBlock;
 
 public class WebBlocks {
 
@@ -48,6 +49,12 @@ public class WebBlocks {
                     .burnable()
             ));
 
+    public static final Block SPIDER_WEB_BLOCK = registerBlock("spider_web_block",
+            new SpiderWebBlock(AbstractBlock.Settings.copy(Blocks.COBWEB)
+                    .registryKey(RegistryKey.of(Registries.BLOCK.getKey(), Identifier.of(Web.MOD_ID, "spider_web_block")))
+            ));
+
+
     private static Block registerBlock(String name, Block block) {
         registerBlockItem(name, block);
         return Registry.register(Registries.BLOCK, Identifier.of(Web.MOD_ID, name), block);
@@ -57,6 +64,11 @@ public class WebBlocks {
         entries.addAfter(Blocks.SNIFFER_EGG, SPIDER_EGG);
         entries.addAfter(SPIDER_EGG, SPIDER_EGG_SHELLS);
         entries.addAfter(Blocks.PALE_HANGING_MOSS, SPIDER_NEST);
+
+    }
+
+    private static void customSpawnEggs(FabricItemGroupEntries entries) {
+        entries.addAfter(Blocks.CREAKING_HEART, SPIDER_EGG);
 
     }
 
@@ -71,5 +83,6 @@ public class WebBlocks {
         Web.LOGGER.info("Registering Mod Blocks for " + Web.MOD_ID);
 
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.NATURAL).register(WebBlocks::customNaturalBlocks);
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.SPAWN_EGGS).register(WebBlocks::customSpawnEggs);
     }
 }

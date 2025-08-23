@@ -52,29 +52,28 @@ public class BabySpiderModel extends EntityModel<BabySpiderRenderState> {
         ModelPartData modelPartData = modelData.getRoot();
         ModelPartData spider = modelPartData.addChild("spider", ModelPartBuilder.create(), ModelTransform.origin(0.0F, 27.0F, 0.0F));
 
-        ModelPartData body0 = spider.addChild("body0", ModelPartBuilder.create().uv(0, 0).cuboid(-3.0F, -3.0F, -3.0F, 6.0F, 6.0F, 6.0F, new Dilation(-1.0F)), ModelTransform.origin(0.0F, -9.0F, 0.0F));
+        ModelPartData body0 = spider.addChild("body0", ModelPartBuilder.create().uv(32, 20).cuboid(-3.0F, -3.0F, -3.0F, 6.0F, 6.0F, 6.0F, new Dilation(-1.0F)), ModelTransform.origin(0.0F, -9.0F, 0.0F));
 
-        ModelPartData leg0 = spider.addChild("leg0", ModelPartBuilder.create().uv(22, 0).cuboid(-11.0F, -1.0F, -1.0F, 12.0F, 2.0F, 2.0F, new Dilation(-0.25F)), ModelTransform.of(-1.75F, -9.0F, 1.75F, 0.0F, 0.7854F, -0.7854F));
+        ModelPartData leg0 = spider.addChild("leg0", ModelPartBuilder.create().uv(32, 32).cuboid(-11.0F, -1.0F, -1.0F, 12.0F, 2.0F, 2.0F, new Dilation(-0.25F)), ModelTransform.of(-1.75F, -9.0F, 1.75F, 0.0F, 0.7854F, -0.7854F));
 
-        ModelPartData leg1 = spider.addChild("leg1", ModelPartBuilder.create().uv(18, 0).cuboid(-1.0F, -1.0F, -1.0F, 12.0F, 2.0F, 2.0F, new Dilation(-0.25F)), ModelTransform.of(1.75F, -9.0F, 1.5F, 0.0F, -0.7854F, 0.7854F));
+        ModelPartData leg1 = spider.addChild("leg1", ModelPartBuilder.create().uv(0, 36).cuboid(-1.0F, -1.0F, -1.0F, 12.0F, 2.0F, 2.0F, new Dilation(-0.25F)), ModelTransform.of(1.75F, -9.0F, 1.5F, 0.0F, -0.7854F, 0.7854F));
 
-        ModelPartData leg2 = spider.addChild("leg2", ModelPartBuilder.create().uv(22, 0).cuboid(-11.0F, -1.0F, -1.0F, 12.0F, 2.0F, 2.0F, new Dilation(-0.25F)), ModelTransform.of(-1.75F, -9.0F, 0.75F, 0.0F, 0.2618F, -0.6109F));
+        ModelPartData leg2 = spider.addChild("leg2", ModelPartBuilder.create().uv(32, 32).cuboid(-11.0F, -1.0F, -1.0F, 12.0F, 2.0F, 2.0F, new Dilation(-0.25F)), ModelTransform.of(-1.75F, -9.0F, 0.75F, 0.0F, 0.2618F, -0.6109F));
 
-        ModelPartData leg3 = spider.addChild("leg3", ModelPartBuilder.create().uv(18, 0).cuboid(-1.0F, -1.0F, -1.0F, 12.0F, 2.0F, 2.0F, new Dilation(-0.25F)), ModelTransform.of(1.75F, -9.0F, 0.5F, 0.0F, -0.2618F, 0.6109F));
+        ModelPartData leg3 = spider.addChild("leg3", ModelPartBuilder.create().uv(0, 36).cuboid(-1.0F, -1.0F, -1.0F, 12.0F, 2.0F, 2.0F, new Dilation(-0.25F)), ModelTransform.of(1.75F, -9.0F, 0.5F, 0.0F, -0.2618F, 0.6109F));
 
-        ModelPartData leg4 = spider.addChild("leg4", ModelPartBuilder.create().uv(22, 0).cuboid(-11.0F, -1.0F, -1.0F, 12.0F, 2.0F, 2.0F, new Dilation(-0.25F)), ModelTransform.of(-1.75F, -9.0F, -0.25F, 0.0F, -0.2618F, -0.6109F));
+        ModelPartData leg4 = spider.addChild("leg4", ModelPartBuilder.create().uv(32, 32).cuboid(-11.0F, -1.0F, -1.0F, 12.0F, 2.0F, 2.0F, new Dilation(-0.25F)), ModelTransform.of(-1.75F, -9.0F, -0.25F, 0.0F, -0.2618F, -0.6109F));
 
-        ModelPartData leg5 = spider.addChild("leg5", ModelPartBuilder.create().uv(18, 0).cuboid(-1.0F, -1.0F, -1.0F, 12.0F, 2.0F, 2.0F, new Dilation(-0.25F)), ModelTransform.of(1.75F, -9.0F, -0.5F, 0.0F, 0.2618F, 0.6109F));
+        ModelPartData leg5 = spider.addChild("leg5", ModelPartBuilder.create().uv(0, 36).cuboid(-1.0F, -1.0F, -1.0F, 12.0F, 2.0F, 2.0F, new Dilation(-0.25F)), ModelTransform.of(1.75F, -9.0F, -0.5F, 0.0F, 0.2618F, 0.6109F));
 
-        ModelPartData leg6 = spider.addChild("leg6", ModelPartBuilder.create().uv(22, 0).cuboid(-11.0F, -1.0F, -1.0F, 12.0F, 2.0F, 2.0F, new Dilation(-0.25F)), ModelTransform.of(-1.75F, -9.0F, -1.25F, 0.0F, -0.7854F, -0.7854F));
+        ModelPartData leg6 = spider.addChild("leg6", ModelPartBuilder.create().uv(32, 32).cuboid(-11.0F, -1.0F, -1.0F, 12.0F, 2.0F, 2.0F, new Dilation(-0.25F)), ModelTransform.of(-1.75F, -9.0F, -1.25F, 0.0F, -0.7854F, -0.7854F));
 
-        ModelPartData leg7 = spider.addChild("leg7", ModelPartBuilder.create().uv(18, 0).cuboid(-1.0F, -1.0F, -1.0F, 12.0F, 2.0F, 2.0F, new Dilation(-0.25F)), ModelTransform.of(1.75F, -9.0F, -1.5F, 0.0F, 0.7854F, 0.7854F));
+        ModelPartData leg7 = spider.addChild("leg7", ModelPartBuilder.create().uv(0, 36).cuboid(-1.0F, -1.0F, -1.0F, 12.0F, 2.0F, 2.0F, new Dilation(-0.25F)), ModelTransform.of(1.75F, -9.0F, -1.5F, 0.0F, 0.7854F, 0.7854F));
 
-        ModelPartData body1 = spider.addChild("body1", ModelPartBuilder.create().uv(0, 12).cuboid(-5.0F, -4.0F, 0.0F, 10.0F, 8.0F, 12.0F, new Dilation(-1.0F)), ModelTransform.origin(0.0F, -9.0F, 1.0F));
+        ModelPartData body1 = spider.addChild("body1", ModelPartBuilder.create().uv(0, 0).cuboid(-5.0F, -4.0F, 0.0F, 10.0F, 8.0F, 12.0F, new Dilation(-1.0F)), ModelTransform.origin(0.0F, -9.0F, 1.0F));
 
-        ModelPartData head = spider.addChild("head", ModelPartBuilder.create().uv(32, 4).cuboid(-4.0F, -4.0F, -8.0F, 8.0F, 8.0F, 8.0F, new Dilation(-1.0F)), ModelTransform.origin(0.0F, -9.0F, -1.0F));
-
-        return TexturedModelData.of(modelData, 64, 32);
+        ModelPartData head = spider.addChild("head", ModelPartBuilder.create().uv(0, 20).cuboid(-4.0F, -4.0F, -8.0F, 8.0F, 8.0F, 8.0F, new Dilation(-1.0F)), ModelTransform.origin(0.0F, -9.0F, -1.0F));
+        return TexturedModelData.of(modelData, 64, 64);
     }
 
     @Override

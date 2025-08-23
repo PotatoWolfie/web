@@ -1,11 +1,15 @@
 package potatowolfie.web.mixin;
 
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.GoalSelector;
-import net.minecraft.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.mob.SpiderEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,11 +17,13 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import potatowolfie.web.Web;
 import potatowolfie.web.entity.custom.SpiderWebProjectileEntity;
 import potatowolfie.web.goals.WebShootingSpiderAttackGoal;
 import potatowolfie.web.interfaces.WebSpiderInterface;
 
 import java.lang.reflect.Field;
+import java.util.Iterator;
 
 @Mixin(SpiderEntity.class)
 public class SpiderEntityMixin implements WebSpiderInterface {
@@ -29,9 +35,23 @@ public class SpiderEntityMixin implements WebSpiderInterface {
     private boolean hasShootWeb = false;
     @Unique
     private boolean inCombat = false;
+    @Unique
+    private boolean goalsInitialized = false;
+
+    @Unique
+    private static final TagKey<EntityType<?>> WEB_IMMUNE_TAG = TagKey.of(RegistryKeys.ENTITY_TYPE,
+            Identifier.of(Web.MOD_ID, "web_immune"));
+
+    @Unique
+    private static boolean isWebImmune(LivingEntity entity) {
+        return entity.getType().isIn(WEB_IMMUNE_TAG);
+    }
 
     @Inject(method = "initGoals", at = @At("TAIL"))
     private void addWebShootingGoal(CallbackInfo ci) {
+        if (goalsInitialized) return;
+        goalsInitialized = true;
+
         SpiderEntity spider = (SpiderEntity) (Object) this;
 
         try {
@@ -39,8 +59,17 @@ public class SpiderEntityMixin implements WebSpiderInterface {
             goalSelectorField.setAccessible(true);
             GoalSelector goalSelector = (GoalSelector) goalSelectorField.get(spider);
 
-            goalSelector.getGoals().removeIf(goal -> goal.getGoal() instanceof MeleeAttackGoal);
-            goalSelector.add(4, new WebShootingSpiderAttackGoal(spider, this));
+            Iterator<PrioritizedGoal> goalIterator = goalSelector.getGoals().iterator();
+            while (goalIterator.hasNext()) {
+                Goal goal = goalIterator.next().getGoal();
+                if (goal instanceof MeleeAttackGoal || goal instanceof PounceAtTargetGoal) {
+                    goalIterator.remove();
+                }
+            }
+
+            goalSelector.add(2, new FleeEntityGoal<>(spider, PlayerEntity.class, 3.5f, 1.0, 1.2));
+            goalSelector.add(2, new WebShootingSpiderAttackGoal(spider, this));
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -59,11 +88,21 @@ public class SpiderEntityMixin implements WebSpiderInterface {
                 hasShootWeb = false;
             }
         }
+
+        SpiderEntity spider = (SpiderEntity) (Object) this;
+        LivingEntity currentTarget = spider.getTarget();
+        if (currentTarget != null && isWebImmune(currentTarget)) {
+            spider.setTarget(null);
+        }
     }
 
     @Override
     @Unique
     public void shootWeb(LivingEntity target) {
+        if (isWebImmune(target)) {
+            return;
+        }
+
         SpiderEntity spider = (SpiderEntity) (Object) this;
         World world = spider.getWorld();
 
@@ -71,41 +110,59 @@ public class SpiderEntityMixin implements WebSpiderInterface {
         webProjectile.setPosition(spider.getX(), spider.getEyeY() - 0.1, spider.getZ());
 
         Vec3d spiderPos = new Vec3d(spider.getX(), spider.getEyeY(), spider.getZ());
-        Vec3d targetPos = new Vec3d(target.getX(), target.getY() + target.getHeight() * 0.5, target.getZ());
+        Vec3d targetVelocity = target.getVelocity();
 
-        double deltaX = targetPos.x - spiderPos.x;
-        double deltaY = targetPos.y - spiderPos.y;
-        double deltaZ = targetPos.z - spiderPos.z;
+        double distance = spider.distanceTo(target);
+
+        double timeToHit = distance / 1.5;
+
+        Vec3d predictedTargetPos = new Vec3d(
+                target.getX() + targetVelocity.x * timeToHit,
+                target.getBlockY() + 0.9,
+                target.getZ() + targetVelocity.z * timeToHit
+        );
+
+        double deltaX = predictedTargetPos.x - spiderPos.x;
+        double deltaY = predictedTargetPos.y - spiderPos.y;
+        double deltaZ = predictedTargetPos.z - spiderPos.z;
         double horizontalDistance = Math.sqrt(deltaX * deltaX + deltaZ * deltaZ);
 
-        double launchAngle = Math.toRadians(15);
-        double minSpeed = 1.5;
-        double maxSpeed = 2.5;
+        double launchAngle;
+        double projectileSpeed = 2.0;
 
-        double gravity = 0.03;
-        double requiredSpeed = Math.sqrt((horizontalDistance * gravity) / Math.sin(2 * launchAngle));
+        if (distance <= 6.0) {
+            launchAngle = Math.toRadians(10.0 + (distance / 6.0) * 10.0);
+        } else if (distance <= 10.0) {
+            launchAngle = Math.toRadians(20.0 + ((distance - 6.0) / 4.0) * 15.0);
+        } else {
+            launchAngle = Math.toRadians(35.0 + Math.min((distance - 10.0) / 6.0, 1.0) * 10.0);
+        }
 
-        double speed = Math.max(minSpeed, Math.min(maxSpeed, requiredSpeed));
+        double gravity = 0.05;
 
-        if (requiredSpeed > maxSpeed || requiredSpeed < minSpeed) {
-            double sinValue = (horizontalDistance * gravity) / (speed * speed);
-            if (sinValue <= 1.0) {
-                launchAngle = Math.asin(sinValue) / 2;
+        double sinAngle = Math.sin(launchAngle);
+        double cosAngle = Math.cos(launchAngle);
+
+        double discriminant = (sinAngle * sinAngle) - (2.0 * gravity * deltaY / (projectileSpeed * projectileSpeed));
+        if (discriminant >= 0) {
+            double optimalSpeed = Math.sqrt((gravity * horizontalDistance * horizontalDistance) /
+                    (horizontalDistance * Math.sin(2 * launchAngle) + 2 * deltaY * cosAngle * cosAngle));
+
+            if (optimalSpeed > 0.5 && optimalSpeed < 3.0) {
+                projectileSpeed = optimalSpeed;
             }
         }
 
-        double horizontalSpeed = speed * Math.cos(launchAngle);
-        double verticalSpeed = speed * Math.sin(launchAngle);
+        double horizontalSpeed = projectileSpeed * cosAngle;
+        double verticalSpeed = projectileSpeed * sinAngle;
 
-        double timeToTarget = horizontalDistance / horizontalSpeed;
-        verticalSpeed += deltaY / timeToTarget;
+        double horizontalNormalizer = horizontalDistance == 0 ? 0 : 1.0 / horizontalDistance;
+        double normalizedX = deltaX * horizontalNormalizer;
+        double normalizedZ = deltaZ * horizontalNormalizer;
 
-        double normalizedX = deltaX / horizontalDistance;
-        double normalizedZ = deltaZ / horizontalDistance;
-
-        double spread = 0.015;
+        double spread = 0.01;
         double randomX = (spider.getRandom().nextDouble() - 0.5) * spread;
-        double randomY = (spider.getRandom().nextDouble() - 0.5) * spread * 0.3;
+        double randomY = (spider.getRandom().nextDouble() - 0.5) * spread * 0.5;
         double randomZ = (spider.getRandom().nextDouble() - 0.5) * spread;
 
         webProjectile.setVelocity(
@@ -117,23 +174,6 @@ public class SpiderEntityMixin implements WebSpiderInterface {
         spider.playSound(SoundEvents.ENTITY_SPIDER_AMBIENT, 1.0f, 0.6f + spider.getRandom().nextFloat() * 0.4f);
 
         world.spawnEntity(webProjectile);
-
-        notifySpidersOfWebShot(target);
-    }
-
-    @Unique
-    private void notifySpidersOfWebShot(LivingEntity target) {
-        SpiderEntity spider = (SpiderEntity) (Object) this;
-        spider.getWorld().getEntitiesByClass(SpiderEntity.class,
-                target.getBoundingBox().expand(32),
-                otherSpider -> otherSpider.getTarget() == target && otherSpider != spider
-        ).forEach(otherSpider -> {
-            if (otherSpider instanceof WebSpiderInterface webSpider) {
-                webSpider.setInCombat(true);
-                webSpider.setCombatTimer(140);
-                webSpider.setHasShootWeb(true);
-            }
-        });
     }
 
     @Override

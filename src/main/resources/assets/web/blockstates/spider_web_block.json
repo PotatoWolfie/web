@@ -1,0 +1,86 @@
+{
+  "variants": {
+    "facing=north,web_type=ground": {
+      "model": "web:block/spider_web_ground"
+    },
+    "facing=south,web_type=ground": {
+      "model": "web:block/spider_web_ground"
+    },
+    "facing=east,web_type=ground": {
+      "model": "web:block/spider_web_ground"
+    },
+    "facing=west,web_type=ground": {
+      "model": "web:block/spider_web_ground"
+    },
+    "facing=up,web_type=ground": {
+      "model": "web:block/spider_web_ground"
+    },
+    "facing=down,web_type=ground": {
+      "model": "web:block/spider_web_ground"
+    },
+
+    "facing=north,web_type=hanging_1": {
+      "model": "web:block/hanging_spider_web_1"
+    },
+    "facing=south,web_type=hanging_1": {
+      "model": "web:block/hanging_spider_web_1",
+      "y": 180
+    },
+    "facing=east,web_type=hanging_1": {
+      "model": "web:block/hanging_spider_web_1",
+      "y": 90
+    },
+    "facing=west,web_type=hanging_1": {
+      "model": "web:block/hanging_spider_web_1",
+      "y": 270
+    },
+
+    "facing=north,web_type=hanging_top": {
+      "model": "web:block/hanging_spider_web_top"
+    },
+    "facing=south,web_type=hanging_top": {
+      "model": "web:block/hanging_spider_web_top",
+      "y": 180
+    },
+    "facing=east,web_type=hanging_top": {
+      "model": "web:block/hanging_spider_web_top",
+      "y": 90
+    },
+    "facing=west,web_type=hanging_top": {
+      "model": "web:block/hanging_spider_web_top",
+      "y": 270
+    },
+
+    "facing=north,web_type=hanging_middle": {
+      "model": "web:block/hanging_spider_web_middle"
+    },
+    "facing=south,web_type=hanging_middle": {
+      "model": "web:block/hanging_spider_web_middle",
+      "y": 180
+    },
+    "facing=east,web_type=hanging_middle": {
+      "model": "web:block/hanging_spider_web_middle",
+      "y": 90
+    },
+    "facing=west,web_type=hanging_middle": {
+      "model": "web:block/hanging_spider_web_middle",
+      "y": 270
+    },
+
+    "facing=north,web_type=hanging_tip": {
+      "model": "web:block/hanging_spider_web_tip"
+    },
+    "facing=south,web_type=hanging_tip": {
+      "model": "web:block/hanging_spider_web_tip",
+      "y": 180
+    },
+    "facing=east,web_type=hanging_tip": {
+      "model": "web:block/hanging_spider_web_tip",
+      "y": 90
+    },
+    "facing=west,web_type=hanging_tip": {
+      "model": "web:block/hanging_spider_web_tip",
+      "y": 270
+    }
+  }
+}

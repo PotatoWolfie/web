@@ -61,9 +61,9 @@ public class BabySpiderEntity extends HostileEntity {
     private static final float field_30498 = 0.1F;
 
     private static final TrackedData<Integer> AGE_TICKS;
-    private static final TrackedData<Integer> MATURE_TIME; // Add this as tracked data
-    private static final int MIN_MATURE_TIME = 18000; // 15 minutes at 20 tps
-    private static final int MAX_MATURE_TIME = 26400; // 22 minutes at 20 tps
+    private static final TrackedData<Integer> MATURE_TIME;
+    private static final int MIN_MATURE_TIME = 18000;
+    private static final int MAX_MATURE_TIME = 26400;
 
     public BabySpiderEntity(EntityType<? extends BabySpiderEntity> entityType, World world) {
         super(entityType, world);
@@ -80,8 +80,8 @@ public class BabySpiderEntity extends HostileEntity {
         this.goalSelector.add(6, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
         this.goalSelector.add(7, new LookAroundGoal(this));
         this.targetSelector.add(1, new RevengeGoal(this));
-        this.targetSelector.add(2, new TargetGoal<PlayerEntity>(this, PlayerEntity.class));
-        this.targetSelector.add(3, new TargetGoal<IronGolemEntity>(this, IronGolemEntity.class));
+        this.targetSelector.add(2, new TargetGoal<>(this, PlayerEntity.class));
+        this.targetSelector.add(3, new TargetGoal<>(this, IronGolemEntity.class));
     }
 
     @Override
@@ -102,7 +102,7 @@ public class BabySpiderEntity extends HostileEntity {
         super.initDataTracker(builder);
         builder.add(SPIDER_FLAGS, (byte)0);
         builder.add(AGE_TICKS, 0);
-        builder.add(MATURE_TIME, -1); // Add this tracker
+        builder.add(MATURE_TIME, -1);
         builder.add(DATA_ID_STATE, SpiderState.IDLE.ordinal());
     }
 
@@ -242,11 +242,9 @@ public class BabySpiderEntity extends HostileEntity {
                 }
             }
 
-            // Update age tracking
             int currentAge = this.dataTracker.get(AGE_TICKS);
             this.dataTracker.set(AGE_TICKS, currentAge + 1);
 
-            // Check for maturation
             int matureTime = this.dataTracker.get(MATURE_TIME);
             if (matureTime > 0 && currentAge >= matureTime) {
                 this.matureIntoSpider();
@@ -282,31 +280,25 @@ public class BabySpiderEntity extends HostileEntity {
         try {
             SpiderEntity adultSpider = EntityType.SPIDER.create(this.getWorld(), SpawnReason.CONVERSION);
             if (adultSpider != null) {
-                // Copy position and rotation
                 adultSpider.refreshPositionAndAngles(
                         this.getX(), this.getY(), this.getZ(),
                         this.getYaw(), this.getPitch()
                 );
 
-                // Copy velocity
                 adultSpider.setVelocity(this.getVelocity());
 
-                // Copy health percentage
                 float healthPercentage = this.getHealth() / this.getMaxHealth();
                 adultSpider.setHealth(adultSpider.getMaxHealth() * healthPercentage);
 
-                // Copy status effects
                 for (StatusEffectInstance effect : this.getStatusEffects()) {
                     adultSpider.addStatusEffect(new StatusEffectInstance(effect));
                 }
 
-                // Copy name
                 if (this.hasCustomName()) {
                     adultSpider.setCustomName(this.getCustomName());
                     adultSpider.setCustomNameVisible(this.isCustomNameVisible());
                 }
 
-                // Handle passengers (like skeleton jockey)
                 if (this.hasPassengers()) {
                     for (Entity passenger : this.getPassengerList()) {
                         passenger.stopRiding();
@@ -314,20 +306,16 @@ public class BabySpiderEntity extends HostileEntity {
                     }
                 }
 
-                // Spawn the adult spider
                 this.getWorld().spawnEntity(adultSpider);
 
-                // Remove this baby spider
                 this.discard();
             }
         } catch (Exception e) {
-            // Log the error if you have a logging system
             System.err.println("Error during spider maturation: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
-    // Add this method for manual testing
     public void forceMature() {
         if (!this.getWorld().isClient) {
             this.matureIntoSpider();
@@ -368,15 +356,15 @@ public class BabySpiderEntity extends HostileEntity {
     }
 
     public boolean canHaveStatusEffect(StatusEffectInstance effect) {
-        return effect.equals(StatusEffects.POISON) ? false : super.canHaveStatusEffect(effect);
+        return !effect.equals(StatusEffects.POISON) && super.canHaveStatusEffect(effect);
     }
 
     public boolean isClimbingWall() {
-        return ((Byte)this.dataTracker.get(SPIDER_FLAGS) & 1) != 0;
+        return (this.dataTracker.get(SPIDER_FLAGS) & 1) != 0;
     }
 
     public void setClimbingWall(boolean climbing) {
-        byte b = (Byte)this.dataTracker.get(SPIDER_FLAGS);
+        byte b = this.dataTracker.get(SPIDER_FLAGS);
         if (climbing) {
             b = (byte)(b | 1);
         } else {
@@ -391,17 +379,16 @@ public class BabySpiderEntity extends HostileEntity {
     public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
         EntityData result = super.initialize(world, difficulty, spawnReason, entityData);
 
-        // Set the mature time when the entity is initialized
         Random random = world.getRandom();
         int matureTime = MIN_MATURE_TIME + random.nextInt(MAX_MATURE_TIME - MIN_MATURE_TIME + 1);
         this.dataTracker.set(MATURE_TIME, matureTime);
 
         Random spawnRandom = world.getRandom();
         if (spawnRandom.nextInt(100) == 0) {
-            SkeletonEntity skeletonEntity = (SkeletonEntity)EntityType.SKELETON.create(this.getWorld(), SpawnReason.JOCKEY);
+            SkeletonEntity skeletonEntity = EntityType.SKELETON.create(this.getWorld(), SpawnReason.JOCKEY);
             if (skeletonEntity != null) {
                 skeletonEntity.refreshPositionAndAngles(this.getX(), this.getY(), this.getZ(), this.getYaw(), 0.0F);
-                skeletonEntity.initialize(world, difficulty, spawnReason, (EntityData)null);
+                skeletonEntity.initialize(world, difficulty, spawnReason, null);
                 skeletonEntity.startRiding(this);
             }
         }
@@ -451,7 +438,6 @@ public class BabySpiderEntity extends HostileEntity {
             }
         }
 
-        // Use getInt with fallback values instead of contains
         int ageTicks = nbt.getInt("AgeTicks", 0);
         if (ageTicks > 0) {
             this.dataTracker.set(AGE_TICKS, ageTicks);
@@ -482,7 +468,7 @@ public class BabySpiderEntity extends HostileEntity {
             int lightLevel = this.mob.getWorld().getLightLevel(this.mob.getBlockPos());
             float f = lightLevel / 15.0F;
             if (f >= 0.5F && this.mob.getRandom().nextInt(100) == 0) {
-                this.mob.setTarget((LivingEntity)null);
+                this.mob.setTarget(null);
                 return false;
             } else {
                 return super.shouldContinue();
@@ -491,14 +477,14 @@ public class BabySpiderEntity extends HostileEntity {
     }
 
     private static class TargetGoal<T extends LivingEntity> extends ActiveTargetGoal<T> {
-        public TargetGoal(BabySpiderEntity spider, Class targetEntityClass) {
+        public TargetGoal(BabySpiderEntity spider, Class<T> targetEntityClass) {
             super(spider, targetEntityClass, true);
         }
 
         public boolean canStart() {
             int lightLevel = this.mob.getWorld().getLightLevel(this.mob.getBlockPos());
             float f = lightLevel / 15.0F;
-            return f >= 0.5F ? false : super.canStart();
+            return !(f >= 0.5F) && super.canStart();
         }
     }
 

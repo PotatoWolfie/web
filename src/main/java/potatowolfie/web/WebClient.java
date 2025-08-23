@@ -5,8 +5,8 @@ import net.fabricmc.fabric.api.client.rendering.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.render.BlockRenderLayer;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.entity.model.EntityModelLayers;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
+import potatowolfie.web.block.WebBlockEntities;
 import potatowolfie.web.block.WebBlocks;
 import potatowolfie.web.entity.WebEntities;
 import potatowolfie.web.entity.client.*;
@@ -25,6 +25,8 @@ public class WebClient implements ClientModInitializer {
 
 
         BlockRenderLayerMap.putBlock(WebBlocks.SPIDER_EGG_SHELLS, BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(WebBlocks.SPIDER_WEB_BLOCK, BlockRenderLayer.CUTOUT);
 
+        BlockEntityRendererFactories.register(WebBlockEntities.SPIDER_WEB_BLOCK_ENTITY, SpiderWebBlockEntityRenderer::new);
     }
 }

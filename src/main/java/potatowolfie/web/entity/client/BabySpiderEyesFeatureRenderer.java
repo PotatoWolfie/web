@@ -10,11 +10,12 @@ import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
+import potatowolfie.web.Web;
 
 @Environment(EnvType.CLIENT)
 public class BabySpiderEyesFeatureRenderer extends FeatureRenderer<BabySpiderRenderState, BabySpiderModel> {
     private static final RenderLayer TEXTURE = RenderLayer.getEntityTranslucentEmissiveNoOutline(
-            Identifier.ofVanilla("textures/entity/spider_eyes.png")
+            Identifier.of(Web.MOD_ID, "textures/entity/spider/baby_spider_eyes.png")
     );
 
     public BabySpiderEyesFeatureRenderer(FeatureRendererContext<BabySpiderRenderState, BabySpiderModel> featureRendererContext) {

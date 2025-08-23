@@ -8,11 +8,17 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.entity.mob.SpiderEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
+import potatowolfie.web.Web;
 import potatowolfie.web.entity.WebEntities;
 
 import java.util.HashSet;
@@ -23,10 +29,12 @@ import java.util.Set;
 public class SpiderWebEntity extends Entity {
 
     private int age = 0;
-    private static final int MAX_AGE = 65;
+    private static final int MAX_AGE = 60;
     private static final int TRAP_DURATION = 40;
 
-    // Animation state - only death animation
+    private static final TagKey<EntityType<?>> WEB_IMMUNE_TAG = TagKey.of(RegistryKeys.ENTITY_TYPE,
+            Identifier.of(Web.MOD_ID, "web_immune"));
+
     public final AnimationState webDieAnimationState = new AnimationState();
 
     private boolean isDieAnimationRunning = false;
@@ -49,6 +57,14 @@ public class SpiderWebEntity extends Entity {
     private final java.util.Map<LivingEntity, Float> originalMovementSpeeds = new java.util.HashMap<>();
     private final java.util.Map<LivingEntity, Float> originalJumpStrengths = new java.util.HashMap<>();
 
+    private final Set<SpiderEntity> alertedSpiders = new HashSet<>();
+
+    private LivingEntity webTarget = null;
+
+    private static boolean isWebImmune(LivingEntity entity) {
+        return entity.getType().isIn(WEB_IMMUNE_TAG);
+    }
+
     public int getTickCount() {
         return this.age;
     }
@@ -64,7 +80,6 @@ public class SpiderWebEntity extends Entity {
         this.setPosition(x, y, z);
         this.setBoundingBox(new Box(x - 1.0, y - 0.5, z - 1.0, x + 1.0, y + 1.5, z + 1.0));
 
-        // Start animation immediately on client
         if (world.isClient) {
             this.webDieAnimationState.start(0);
             this.isDieAnimationRunning = true;
@@ -94,12 +109,19 @@ public class SpiderWebEntity extends Entity {
 
             if (this.age <= TRAP_DURATION) {
                 maintainTrappedEntities();
+                if (!trappedEntities.isEmpty()) {
+                    alertAllSpiders();
+                } else {
+                    clearSpiderTargets();
+                }
             } else if (this.age == TRAP_DURATION + 1) {
                 releaseAllEntities();
+                clearSpiderTargets();
             }
 
             if (this.age >= MAX_AGE) {
                 releaseAllEntities();
+                clearSpiderTargets();
                 this.discard();
             }
         }
@@ -108,6 +130,52 @@ public class SpiderWebEntity extends Entity {
             updateAnimations();
         } catch (Exception ignored) {
         }
+    }
+
+    private void alertAllSpiders() {
+        LivingEntity target = null;
+        for (LivingEntity trapped : trappedEntities) {
+            if (trapped.isAlive() && !(trapped instanceof SpiderEntity) && !isWebImmune(trapped)) {
+                target = trapped;
+                break;
+            }
+        }
+
+        if (target == null) {
+            clearSpiderTargets();
+            return;
+        }
+
+        Box searchBox = Box.of(this.getPos(), 128, 64, 128);
+        List<SpiderEntity> nearbySpiders = this.getWorld().getEntitiesByClass(
+                SpiderEntity.class,
+                searchBox,
+                spider -> spider.isAlive()
+        );
+
+        for (SpiderEntity spider : nearbySpiders) {
+            double distance = spider.distanceTo(target);
+            if (distance <= 64.0) {
+                spider.setTarget(target);
+                alertedSpiders.add(spider);
+            }
+        }
+    }
+
+    private void clearSpiderTargets() {
+        Iterator<SpiderEntity> iterator = alertedSpiders.iterator();
+        while (iterator.hasNext()) {
+            SpiderEntity spider = iterator.next();
+            if (spider.isAlive()) {
+                LivingEntity currentTarget = spider.getTarget();
+                if (currentTarget != null && (webTarget == currentTarget ||
+                        originalMovementSpeeds.containsKey(currentTarget))) {
+                    spider.setTarget(null);
+                }
+            }
+            iterator.remove();
+        }
+        alertedSpiders.clear();
     }
 
     private void updateAnimations() {
@@ -149,7 +217,6 @@ public class SpiderWebEntity extends Entity {
 
         animationStartedThisTick = true;
 
-        // Always start death animation since that's all we have
         this.webDieAnimationState.start(this.age);
         this.isDieAnimationRunning = true;
     }
@@ -184,11 +251,15 @@ public class SpiderWebEntity extends Entity {
         List<LivingEntity> nearbyEntities = this.getWorld().getEntitiesByClass(
                 LivingEntity.class,
                 webBox,
-                entity -> entity.isAlive()
+                entity -> entity.isAlive() && !isWebImmune(entity)
         );
 
         for (LivingEntity entity : nearbyEntities) {
             trapEntity(entity);
+
+            if (this.webTarget == null) {
+                this.webTarget = entity;
+            }
         }
     }
 
@@ -197,60 +268,24 @@ public class SpiderWebEntity extends Entity {
         while (iterator.hasNext()) {
             LivingEntity entity = iterator.next();
 
-            if (!entity.isAlive()) {
+            if (!entity.isAlive() || isWebImmune(entity)) {
                 releaseEntity(entity);
                 iterator.remove();
                 continue;
             }
         }
-    }
 
-    private void constrainEntityToWeb(LivingEntity entity, Box webBox) {
-        Box entityBox = entity.getBoundingBox();
-        double entityX = entity.getX();
-        double entityY = entity.getY();
-        double entityZ = entity.getZ();
-
-        boolean needsRepositioning = false;
-        double newX = entityX;
-        double newY = entityY;
-        double newZ = entityZ;
-
-        if (entityBox.minX < webBox.minX) {
-            newX = webBox.minX + (entityBox.maxX - entityBox.minX) / 2;
-            needsRepositioning = true;
-        } else if (entityBox.maxX > webBox.maxX) {
-            newX = webBox.maxX - (entityBox.maxX - entityBox.minX) / 2;
-            needsRepositioning = true;
-        }
-
-        if (entityBox.minY < webBox.minY) {
-            newY = webBox.minY;
-            needsRepositioning = true;
-        } else if (entityBox.maxY > webBox.maxY) {
-            newY = webBox.maxY - (entityBox.maxY - entityBox.minY);
-            needsRepositioning = true;
-        }
-
-        if (entityBox.minZ < webBox.minZ) {
-            newZ = webBox.minZ + (entityBox.maxZ - entityBox.minZ) / 2;
-            needsRepositioning = true;
-        } else if (entityBox.maxZ > webBox.maxZ) {
-            newZ = webBox.maxZ - (entityBox.maxZ - entityBox.minZ) / 2;
-            needsRepositioning = true;
-        }
-
-        if (needsRepositioning) {
-            entity.setPosition(newX, newY, newZ);
-            entity.setVelocity(0, 0, 0);
-
-            if (entityBox.minY <= webBox.minY) {
-                entity.setOnGround(true);
-            }
+        if (trappedEntities.isEmpty()) {
+            clearSpiderTargets();
         }
     }
 
     private void trapEntity(LivingEntity entity) {
+        // Double-check immunity before trapping
+        if (isWebImmune(entity)) {
+            return;
+        }
+
         trappedEntities.add(entity);
         GLOBALLY_TRAPPED_ENTITIES.put(entity, this);
 
@@ -288,12 +323,13 @@ public class SpiderWebEntity extends Entity {
     public void remove(RemovalReason reason) {
         if (!this.getWorld().isClient) {
             releaseAllEntities();
+            clearSpiderTargets();
         }
         super.remove(reason);
     }
 
     public boolean shouldPreventJump(LivingEntity entity) {
-        return trappedEntities.contains(entity) && this.age <= TRAP_DURATION;
+        return trappedEntities.contains(entity) && this.age <= TRAP_DURATION && !isWebImmune(entity);
     }
 
     @Override
@@ -360,15 +396,26 @@ public class SpiderWebEntity extends Entity {
     }
 
     public static boolean isEntityTrapped(LivingEntity entity) {
+        if (isWebImmune(entity)) {
+            return false;
+        }
         SpiderWebEntity web = GLOBALLY_TRAPPED_ENTITIES.get(entity);
         return web != null && web.isTrapping();
     }
 
     public static boolean shouldPreventMovement(LivingEntity entity) {
-        return isEntityTrapped(entity);
+        return isEntityTrapped(entity) && !isWebImmune(entity);
     }
 
     public static boolean shouldPreventJumping(LivingEntity entity) {
-        return isEntityTrapped(entity);
+        return isEntityTrapped(entity) && !isWebImmune(entity);
+    }
+
+    public static boolean isEntityTouchingWeb(LivingEntity entity) {
+        return false;
+    }
+
+    public LivingEntity getWebTarget() {
+        return webTarget;
     }
 }

@@ -59,7 +59,6 @@ public class SpiderAnimationMixin implements SpiderAnimationInterface {
 
         animationStartedThisTick = false;
 
-        // Handle movement detection and state changes
         boolean isMoving = spider.getVelocity().horizontalLength() > 0.01;
 
         if (isMoving) {
@@ -72,7 +71,6 @@ public class SpiderAnimationMixin implements SpiderAnimationInterface {
             }
         }
 
-        // Update animations on client side
         if (world.isClient()) {
             updateAnimations(spider);
         }
@@ -82,12 +80,10 @@ public class SpiderAnimationMixin implements SpiderAnimationInterface {
     private void updateAnimations(SpiderEntity spider) {
         if (this.spiderState == SpiderState.WALKING) {
             if (!isWalkingAnimationRunning) {
-                // Stop idle animation
                 this.idleAnimationState.stop();
                 this.isIdleAnimationRunning = false;
                 this.idleAnimationTimeout = 0;
 
-                // Start walking animation
                 this.walkingAnimationState.start(spider.age);
                 this.isWalkingAnimationRunning = true;
             }
@@ -95,11 +91,9 @@ public class SpiderAnimationMixin implements SpiderAnimationInterface {
             if (!isIdleAnimationRunning) {
                 --this.idleAnimationTimeout;
                 if (this.idleAnimationTimeout <= 0) {
-                    // Stop walking animation
                     this.walkingAnimationState.stop();
                     this.isWalkingAnimationRunning = false;
 
-                    // Start idle animation
                     this.idleAnimationTimeout = spider.getRandom().nextInt(40) + 80;
                     this.idleAnimationState.start(spider.age);
                     this.isIdleAnimationRunning = true;
@@ -120,7 +114,6 @@ public class SpiderAnimationMixin implements SpiderAnimationInterface {
         this.previousState = this.spiderState;
         this.spiderState = newState;
 
-        // Sync to client via data tracker
         if (!world.isClient()) {
             spider.getDataTracker().set(DATA_ID_STATE, newState.ordinal());
         }
