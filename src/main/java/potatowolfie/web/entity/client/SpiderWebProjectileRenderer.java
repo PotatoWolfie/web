@@ -62,7 +62,6 @@ public class SpiderWebProjectileRenderer extends ProjectileEntityRenderer<Spider
                 color);
 
         matrices.pop();
-        super.render(state, matrices, vertexConsumers, light);
     }
 
     public Identifier getTexture(ProjectileEntityRenderState state) {

@@ -1,1 +1,3 @@
-// 1.21.6	-999999999-01-01T00:00:00	Web/Web Recipes
+// 1.21.8	-999999999-01-01T00:00:00	Web/Web Recipes
+bf32c5efc6ff62563302d4ce09a1db9bca16c56e data/web/advancement/recipes/building_blocks/spider_web.json
+df754b3b96ec0ca6f40a4780fd249844d02f276a data/web/recipe/spider_web.json

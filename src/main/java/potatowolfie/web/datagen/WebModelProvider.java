@@ -14,7 +14,7 @@ public class WebModelProvider extends FabricModelProvider {
 
     @Override
     public void generateBlockStateModels(BlockStateModelGenerator blockStateModelGenerator) {
-        blockStateModelGenerator.registerRandomHorizontalRotations(TexturedModel.CUBE_ALL, WebBlocks.SPIDER_NEST);
+        blockStateModelGenerator.registerRandomHorizontalRotations(TexturedModel.CUBE_ALL, WebBlocks.SPIDER_MOSS);
     }
 
     @Override

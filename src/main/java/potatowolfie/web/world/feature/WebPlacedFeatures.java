@@ -25,14 +25,11 @@ public class WebPlacedFeatures {
         register(context, SPIDER_EGG_CLUSTER_PLACED_KEY,
                 configuredFeatureRegistryEntryLookup.getOrThrow(WebConfiguredFeatures.SPIDER_EGG_CLUSTER_KEY),
                 List.of(
-                        HeightRangePlacementModifier.uniform(YOffset.fixed(-64), YOffset.fixed(55)),
-                        RarityFilterPlacementModifier.of(24),
+                        CountPlacementModifier.of(2),
                         SquarePlacementModifier.of(),
-                        BiomePlacementModifier.of(),
-                        RandomOffsetPlacementModifier.of(
-                                net.minecraft.util.math.intprovider.UniformIntProvider.create(-3, 3),
-                                net.minecraft.util.math.intprovider.UniformIntProvider.create(-3, 3)
-                        )
+                        RarityFilterPlacementModifier.of(8),
+                        HeightRangePlacementModifier.uniform(YOffset.fixed(-64), YOffset.fixed(55)),
+                        BiomePlacementModifier.of()
                 )
         );
     }

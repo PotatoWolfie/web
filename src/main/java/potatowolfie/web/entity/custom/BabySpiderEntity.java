@@ -225,21 +225,10 @@ public class BabySpiderEntity extends HostileEntity {
         super.tick();
 
         if (!this.getWorld().isClient) {
-            if (climbingStateCooldown <= 0) {
-                boolean shouldClimb = this.horizontalCollision;
-                if (shouldClimb != this.isClimbingWall()) {
-                    this.setClimbingWall(shouldClimb);
-                    climbingStateCooldown = 8;
-                }
-            } else {
-                climbingStateCooldown--;
-            }
+            this.setClimbingWall(this.horizontalCollision);
 
-            if (this.isOnGround() && !this.horizontalCollision && this.isClimbingWall()) {
-                if (climbingStateCooldown <= 0) {
-                    this.setClimbingWall(false);
-                    climbingStateCooldown = 5;
-                }
+            if (this.getNavigation().isIdle() && this.age % 20 == 0) {
+                this.getNavigation().stop();
             }
 
             int currentAge = this.dataTracker.get(AGE_TICKS);

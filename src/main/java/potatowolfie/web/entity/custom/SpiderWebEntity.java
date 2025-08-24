@@ -281,7 +281,6 @@ public class SpiderWebEntity extends Entity {
     }
 
     private void trapEntity(LivingEntity entity) {
-        // Double-check immunity before trapping
         if (isWebImmune(entity)) {
             return;
         }

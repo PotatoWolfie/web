@@ -1,1 +1,5 @@
-// 1.21.6	-999999999-01-01T00:00:00	Web/Block Loot Tables
+// 1.21.8	-999999999-01-01T00:00:00	Web/Block Loot Tables
+51f7bbb3e0348137abd63bdb5f90ddcdeda128a8 data/web/loot_table/blocks/spider_egg.json
+c7922ee7c191af870ded33ffa667a2cfa0e0d708 data/web/loot_table/blocks/spider_egg_shells.json
+0ad7ccf85d3b555cbc3b4930b88daa21a4e19351 data/web/loot_table/blocks/spider_moss.json
+b4bef43b4e54ed9d9ab61abd05211b430dbd87a8 data/web/loot_table/blocks/spider_web_block.json

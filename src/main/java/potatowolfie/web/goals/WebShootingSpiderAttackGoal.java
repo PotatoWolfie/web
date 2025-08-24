@@ -492,14 +492,6 @@ public class WebShootingSpiderAttackGoal extends Goal {
                     webAttempts = 0;
                 }
             }
-
-            transitionToState(SpiderState.COOLDOWN);
-        } else if (distance <= 5.0) {
-            transitionToState(SpiderState.POSITIONING);
-        } else if (distance > 15.0) {
-            transitionToState(SpiderState.POSITIONING);
-        } else if (stateTimer > 40) {
-            transitionToState(SpiderState.POSITIONING);
         }
     }
 

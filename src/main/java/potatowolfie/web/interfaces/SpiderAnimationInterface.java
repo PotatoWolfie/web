@@ -9,18 +9,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import potatowolfie.web.enums.SpiderState;
 
 public interface SpiderAnimationInterface {
-    @Unique
-    void web_1_21_6_7$onDataTrackerSync(TrackedData<?> data, CallbackInfo ci);
-
-    @Unique
-    void web_1_21_6_7$writeCustomData(WriteView nbt);
-
-    @Unique
-    void web_1_21_6_7$readCustomData(ReadView nbt);
-
     AnimationState web_1_21_6_7$getIdleAnimationState();
     AnimationState web_1_21_6_7$getWalkingAnimationState();
-
+    AnimationState web_1_21_6_7$getShootingAnimationState();
     SpiderState web_1_21_6_7$getSpiderState();
     SpiderState web_1_21_6_7$getPreviousState();
+    void web_1_21_6_7$setSpiderState(SpiderState state);
+    void web_1_21_6_7$onDataTrackerSync(TrackedData<?> data, CallbackInfo ci);
+    void web_1_21_6_7$writeCustomData(WriteView nbt);
+    void web_1_21_6_7$readCustomData(ReadView nbt);
 }

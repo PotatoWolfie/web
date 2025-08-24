@@ -1,3 +1,4 @@
+
 {
 	"schemaVersion": 1,
 	"id": "web",
@@ -12,10 +13,11 @@
 		"sources": "https://github.com/FabricMC/fabric-example-mod",
 		"issues": "https://github.com/FabricMC/fabric-example-mod/issues"
 	},
-	"license": "MIT",
+	"license": "Limited All Rights Reserved",
 	"icon": "assets/web/icon.png",
 	"environment": "*",
 	"update_checker": true,
+	"accessWidener": "web.accesswidener",
 	"entrypoints": {
 		"main": [
 			"potatowolfie.web.Web"

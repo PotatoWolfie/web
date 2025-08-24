@@ -1,0 +1,12 @@
+{
+  "item.web.spider_egg": "Паучье яйцо",
+  "item.web.spider_egg_shells": "Оболочка паучьего яйца",
+  "item.web.spider_moss": "Паучий мох",
+  "item.web.spider_web_block": "Паучья сеть",
+
+  "block.web.spider_web": "Паучья сеть",
+
+  "entity.web.spider_web": "Паучья сеть",
+  "entity.web.spider_web_flying": "Летящая паучья сеть",
+  "entity.web.baby_spider": "Паучонок"
+}

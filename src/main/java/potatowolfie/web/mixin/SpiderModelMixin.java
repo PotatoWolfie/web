@@ -33,11 +33,14 @@ public class SpiderModelMixin {
     private Animation idleAnimation;
     @Unique
     private Animation walkingAnimation;
+    @Unique
+    private Animation shootingAnimation;
 
     @Inject(method = "<init>", at = @At("TAIL"))
     private void initAnimations(ModelPart root, CallbackInfo ci) {
         this.idleAnimation = SpiderAnimations.SPIDER_IDLE.createAnimation(root);
         this.walkingAnimation = SpiderAnimations.SPIDER_WALK.createAnimation(root);
+        this.shootingAnimation = SpiderAnimations.SPIDER_SHOOT.createAnimation(root);
     }
 
     @Inject(method = "setAngles(Lnet/minecraft/client/render/entity/state/LivingEntityRenderState;)V", at = @At("TAIL"))
@@ -49,6 +52,10 @@ public class SpiderModelMixin {
 
             if (this.walkingAnimation != null && spiderRenderState.walkingAnimationState.isRunning()) {
                 this.walkingAnimation.apply(spiderRenderState.walkingAnimationState, renderState.age, 1.0F);
+            }
+
+            if (this.shootingAnimation != null && spiderRenderState.shootingAnimationState.isRunning()) {
+                this.shootingAnimation.apply(spiderRenderState.shootingAnimationState, renderState.age, 1.0F);
             }
         }
     }

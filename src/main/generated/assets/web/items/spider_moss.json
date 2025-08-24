@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "web:block/spider_nest"
+    "model": "web:block/spider_moss"
   }
 }

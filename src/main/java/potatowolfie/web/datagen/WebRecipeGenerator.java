@@ -2,9 +2,12 @@ package potatowolfie.web.datagen;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
+import net.minecraft.block.Blocks;
 import net.minecraft.data.recipe.RecipeExporter;
 import net.minecraft.data.recipe.RecipeGenerator;
+import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.registry.RegistryWrapper;
+import potatowolfie.web.block.WebBlocks;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -18,8 +21,12 @@ public class WebRecipeGenerator extends FabricRecipeProvider {
         return new RecipeGenerator(wrapperLookup, recipeExporter) {
             @Override
             public void generate() {
-                // Add your recipes here when you need them
-                // For now, this is empty but won't cause null pointer exceptions
+                createShaped(RecipeCategory.BUILDING_BLOCKS, WebBlocks.SPIDER_WEB_BLOCK, 4)
+                        .pattern("XX")
+                        .pattern("XX")
+                        .input('X', Blocks.COBWEB)
+                        .criterion(hasItem(Blocks.COBWEB), conditionsFromItem(Blocks.COBWEB))
+                        .offerTo(recipeExporter);
             }
         };
     }

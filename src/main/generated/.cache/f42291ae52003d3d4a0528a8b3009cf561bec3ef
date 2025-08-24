@@ -1,2 +1,4 @@
-// 1.21.6	-999999999-01-01T00:00:00	Web/Tags for minecraft:block
-35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/minecraft/tags/block/mineable/pickaxe.json
+// 1.21.8	-999999999-01-01T00:00:00	Web/Tags for minecraft:block
+3a6476315bfdb6732973c0c4df6bb08b31a7a982 data/minecraft/tags/block/dirt.json
+3a6476315bfdb6732973c0c4df6bb08b31a7a982 data/minecraft/tags/block/mineable/hoe.json
+2ab2f031009b8246133c63b9470bd06b9b067fb2 data/minecraft/tags/block/sword_efficient.json

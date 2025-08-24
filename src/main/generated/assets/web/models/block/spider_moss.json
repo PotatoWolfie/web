@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "web:block/spider_nest"
+    "all": "web:block/spider_moss"
   }
 }
