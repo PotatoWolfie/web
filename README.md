@@ -1,4 +1,4 @@
-# ![Just about everything in the mod, in one image.](https://cdn.modrinth.com/data/cached_images/8b7e74ecb154b19ffff45674e2c3021247f59b3c_0.webp)
+# ![Just about everything in the mod, in one image.](https://i.imgur.com/O5rEFGZ.png)
 **Web** is a mod that expands on spiders by giving them new behaviors and animations. Spiders can now shoot webs to trap players, and baby spiders will hatch from eggs found in Spider Egg Clusters underground. Their attacks and style are inspired by the way _Minecraft Dungeons_ implemented spiders.
 
 # ![Spider Idle](https://cdn.modrinth.com/data/cached_images/78abcd2be380f7755dd1617b6cd0b572838bab95.gif) Spider
