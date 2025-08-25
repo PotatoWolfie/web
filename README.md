@@ -21,3 +21,4 @@ As of now, the only changes that were made to the **Cave Spider** are the animat
 | Spider Related Boss |❌|
 | More Spider Eye Usages |❌|
 | More Fermented Spider Eye Usages |❌|
+| Cave Spider Rework |❌|
