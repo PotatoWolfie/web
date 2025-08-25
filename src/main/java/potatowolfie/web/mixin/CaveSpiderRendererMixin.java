@@ -2,6 +2,7 @@ package potatowolfie.web.mixin;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.render.entity.CaveSpiderEntityRenderer;
 import net.minecraft.client.render.entity.SpiderEntityRenderer;
 import net.minecraft.client.render.entity.state.LivingEntityRenderState;
 import net.minecraft.entity.mob.SpiderEntity;
@@ -23,7 +24,8 @@ public class CaveSpiderRendererMixin {
     @Inject(method = "createRenderState", at = @At("RETURN"), cancellable = true)
     private void createCustomRenderState(CallbackInfoReturnable<LivingEntityRenderState> cir) {
         SpiderEntityRenderer<?> renderer = (SpiderEntityRenderer<?>) (Object) this;
-        if (renderer.getClass().getSimpleName().equals("CaveSpiderEntityRenderer")) {
+
+        if (renderer instanceof CaveSpiderEntityRenderer) {
             cir.setReturnValue(new CaveSpiderEntityRenderState());
         } else {
             cir.setReturnValue(new SpiderEntityRenderState());

@@ -29,18 +29,28 @@ public class CaveSpiderModelMixin {
     @Shadow @Final private ModelPart leftFrontLeg;
 
     @Unique
+    private Animation spiderIdleAnimation;
+    @Unique
+    private Animation spiderWalkingAnimation;
+    @Unique
+    private Animation spiderShootingAnimation;
+    @Unique
     private Animation caveSpiderIdleAnimation;
     @Unique
     private Animation caveSpiderWalkingAnimation;
 
     @Inject(method = "<init>", at = @At("TAIL"))
-    private void initCaveSpiderAnimations(ModelPart root, CallbackInfo ci) {
+    private void initAllSpiderAnimations(ModelPart root, CallbackInfo ci) {
+        this.spiderIdleAnimation = SpiderAnimations.SPIDER_IDLE.createAnimation(root);
+        this.spiderWalkingAnimation = SpiderAnimations.SPIDER_WALK.createAnimation(root);
+        this.spiderShootingAnimation = SpiderAnimations.SPIDER_SHOOT.createAnimation(root);
         this.caveSpiderIdleAnimation = SpiderAnimations.SPIDER_IDLE.createAnimation(root);
         this.caveSpiderWalkingAnimation = SpiderAnimations.SPIDER_WALK.createAnimation(root);
     }
 
     @Inject(method = "setAngles(Lnet/minecraft/client/render/entity/state/LivingEntityRenderState;)V", at = @At("TAIL"))
-    private void applyCaveSpiderAnimations(LivingEntityRenderState renderState, CallbackInfo ci) {
+    private void applyAllSpiderAnimations(LivingEntityRenderState renderState, CallbackInfo ci) {
+        // Handle cave spider animations
         if (renderState instanceof CaveSpiderEntityRenderState caveSpiderRenderState) {
             if (this.caveSpiderIdleAnimation != null && caveSpiderRenderState.idleAnimationState.isRunning()) {
                 this.caveSpiderIdleAnimation.apply(caveSpiderRenderState.idleAnimationState, renderState.age, 1.0F);

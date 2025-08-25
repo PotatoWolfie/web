@@ -100,16 +100,14 @@ public class SpiderEntityMixin implements WebSpiderInterface, SpiderAnimationInt
         return (Object) this instanceof CaveSpiderEntity;
     }
 
-    // Helper method to get goalSelector field with correct names
     @Unique
     private static Field getGoalSelectorField() throws NoSuchFieldException {
         NoSuchFieldException lastException = null;
 
-        // Try all possible field names for goalSelector
         String[] possibleNames = {
-                "goalSelector",     // Deobfuscated name (dev environment)
-                "field_6201",       // Correct intermediary name from Yarn docs
-                "bO"                // Obfuscated name pattern
+                "goalSelector",
+                "field_6201",
+                "bO"
         };
 
         for (String name : possibleNames) {
@@ -117,11 +115,9 @@ public class SpiderEntityMixin implements WebSpiderInterface, SpiderAnimationInt
                 return MobEntity.class.getDeclaredField(name);
             } catch (NoSuchFieldException e) {
                 lastException = e;
-                // Continue trying other names
             }
         }
 
-        // If we get here, none of the names worked
         throw new NoSuchFieldException("Could not find goalSelector field with any of the tried names: " + String.join(", ", possibleNames));
     }
 
@@ -144,7 +140,6 @@ public class SpiderEntityMixin implements WebSpiderInterface, SpiderAnimationInt
         SpiderEntity spider = (SpiderEntity) (Object) this;
 
         try {
-            // Use the helper method with correct field names
             Field goalSelectorField = getGoalSelectorField();
             goalSelectorField.setAccessible(true);
             GoalSelector goalSelector = (GoalSelector) goalSelectorField.get(spider);
