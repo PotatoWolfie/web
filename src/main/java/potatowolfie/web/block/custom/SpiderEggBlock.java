@@ -31,9 +31,10 @@ import potatowolfie.web.entity.custom.BabySpiderEntity;
 public class SpiderEggBlock extends Block {
     public static final BooleanProperty PREVENTED = BooleanProperty.of("prevented");
     public static final BooleanProperty SPAWNED_PROTECTORS = BooleanProperty.of("spawned_protectors");
-    public static final IntProperty REMAINING_TIME = IntProperty.of("remaining_time", 0, 240);
+    public static final IntProperty REMAINING_TIME = IntProperty.of("remaining_time", 0, 288);
     private static final int HATCH_TIME = 24000;
-    private static final int SCALED_HATCH_TIME = 240;
+    private static final int MIN_SCALED_HATCH_TIME = 216;
+    private static final int MAX_SCALED_HATCH_TIME = 288;
     private static final double PLAYER_RANGE = 50.0;
     private static final int PLAYER_CHECK_INTERVAL = 100;
     private static final int MAX_PROTECTOR_SPIDERS = 2;
@@ -45,7 +46,7 @@ public class SpiderEggBlock extends Block {
         this.setDefaultState(this.stateManager.getDefaultState()
                 .with(PREVENTED, false)
                 .with(SPAWNED_PROTECTORS, false)
-                .with(REMAINING_TIME, SCALED_HATCH_TIME));
+                .with(REMAINING_TIME, MAX_SCALED_HATCH_TIME));
     }
 
     @Override
@@ -86,6 +87,13 @@ public class SpiderEggBlock extends Block {
 
         int remainingTime = state.get(REMAINING_TIME);
         boolean spawnedProtectors = state.get(SPAWNED_PROTECTORS);
+
+        if (remainingTime == MAX_SCALED_HATCH_TIME) {
+            int randomHatchTime = MIN_SCALED_HATCH_TIME + random.nextInt(MAX_SCALED_HATCH_TIME - MIN_SCALED_HATCH_TIME + 1);
+            world.setBlockState(pos, state.with(REMAINING_TIME, randomHatchTime), Block.NOTIFY_ALL);
+            state = world.getBlockState(pos);
+            remainingTime = randomHatchTime;
+        }
 
         boolean playerNearby = world.getPlayers().stream()
                 .anyMatch(player -> player.squaredDistanceTo(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) <= PLAYER_RANGE * PLAYER_RANGE);

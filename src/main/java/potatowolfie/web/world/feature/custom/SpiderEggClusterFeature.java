@@ -54,13 +54,14 @@ public class SpiderEggClusterFeature extends Feature<SpiderEggClusterFeatureConf
 
             BlockPos floorPos = findFloorPosition(world, new BlockPos(x, actualOrigin.getY(), z));
             if (floorPos != null && canPlaceNest(world, floorPos)) {
-                world.setBlockState(floorPos, WebBlocks.SPIDER_MOSS.getDefaultState(), Block.NOTIFY_ALL);
+                // Force replacement of the block
+                world.setBlockState(floorPos, WebBlocks.SPIDER_MOSS.getDefaultState(), Block.NOTIFY_ALL | Block.FORCE_STATE);
                 nestPositions.add(floorPos);
 
                 if (random.nextFloat() < 0.7f) {
                     for (BlockPos nearbyPos : BlockPos.iterate(floorPos.add(-3, 0, -3), floorPos.add(3, 0, 3))) {
                         if (random.nextFloat() < 0.4f && canPlaceNest(world, nearbyPos)) {
-                            world.setBlockState(nearbyPos, WebBlocks.SPIDER_MOSS.getDefaultState(), Block.NOTIFY_ALL);
+                            world.setBlockState(nearbyPos, WebBlocks.SPIDER_MOSS.getDefaultState(), Block.NOTIFY_ALL | Block.FORCE_STATE);
                             nestPositions.add(nearbyPos.toImmutable());
                         }
                     }
@@ -74,7 +75,7 @@ public class SpiderEggClusterFeature extends Feature<SpiderEggClusterFeatureConf
 
             BlockPos floorPos = findFloorPosition(world, new BlockPos(x, actualOrigin.getY(), z));
             if (floorPos != null && canPlaceNest(world, floorPos)) {
-                world.setBlockState(floorPos, WebBlocks.SPIDER_MOSS.getDefaultState(), Block.NOTIFY_ALL);
+                world.setBlockState(floorPos, WebBlocks.SPIDER_MOSS.getDefaultState(), Block.NOTIFY_ALL | Block.FORCE_STATE);
                 nestPositions.add(floorPos);
             }
         }
@@ -100,11 +101,11 @@ public class SpiderEggClusterFeature extends Feature<SpiderEggClusterFeatureConf
 
             BlockPos floorPos = findFloorPosition(world, new BlockPos(x, origin.getY(), z));
             if (floorPos != null && canPlaceNest(world, floorPos)) {
-                world.setBlockState(floorPos, WebBlocks.SPIDER_MOSS.getDefaultState(), Block.NOTIFY_ALL);
+                world.setBlockState(floorPos, WebBlocks.SPIDER_MOSS.getDefaultState(), Block.NOTIFY_ALL | Block.FORCE_STATE);
 
                 BlockPos topNestPos = floorPos.up();
                 if (world.getBlockState(topNestPos).isAir()) {
-                    world.setBlockState(topNestPos, WebBlocks.SPIDER_MOSS.getDefaultState(), Block.NOTIFY_ALL);
+                    world.setBlockState(topNestPos, WebBlocks.SPIDER_MOSS.getDefaultState(), Block.NOTIFY_ALL | Block.FORCE_STATE);
 
                     BlockPos topEggPos = topNestPos.up();
                     if (world.getBlockState(topEggPos).isAir()) {

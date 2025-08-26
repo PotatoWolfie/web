@@ -137,15 +137,13 @@ public class SpiderWebBlock extends BlockWithEntity {
             return this.getDefaultState()
                     .with(FACING, Direction.UP)
                     .with(WEB_TYPE, WebType.GROUND);
-        }
-        else if (clickedSide == Direction.DOWN) {
-            Direction playerFacing = ctx.getHorizontalPlayerFacing();
+        } else if (clickedSide == Direction.DOWN) {
+            Direction facingDirection = getHangingWebFacing(world, pos, ctx);
             WebType webType = determineHangingType(world, pos);
             return this.getDefaultState()
-                    .with(FACING, playerFacing)
+                    .with(FACING, facingDirection)
                     .with(WEB_TYPE, webType);
-        }
-        else if (clickedSide.getAxis().isHorizontal()) {
+        } else if (clickedSide.getAxis().isHorizontal()) {
             BlockPos belowPos = pos.down();
             BlockState belowState = world.getBlockState(belowPos);
 
@@ -154,11 +152,32 @@ public class SpiderWebBlock extends BlockWithEntity {
                         .with(FACING, Direction.UP)
                         .with(WEB_TYPE, WebType.GROUND);
             }
-
             return null;
         }
-
         return null;
+    }
+
+    private Direction getHangingWebFacing(World world, BlockPos pos, ItemPlacementContext ctx) {
+        BlockPos abovePos = pos.up();
+        BlockState aboveState = world.getBlockState(abovePos);
+
+        if (aboveState.getBlock() == this && aboveState.get(WEB_TYPE) != WebType.GROUND) {
+            return aboveState.get(FACING);
+        }
+
+        BlockPos checkPos = abovePos.up();
+        for (int i = 0; i < 10 && checkPos.getY() < world.getHeight(); i++) {
+            BlockState checkState = world.getBlockState(checkPos);
+            if (checkState.getBlock() == this && checkState.get(WEB_TYPE) != WebType.GROUND) {
+                return checkState.get(FACING);
+            }
+            if (!checkState.isAir() && checkState.getBlock() != this) {
+                break;
+            }
+            checkPos = checkPos.up();
+        }
+
+        return ctx.getHorizontalPlayerFacing().getOpposite();
     }
 
     private WebType determineHangingType(World world, BlockPos pos) {
@@ -173,7 +192,6 @@ public class SpiderWebBlock extends BlockWithEntity {
                 return WebType.HANGING_TOP;
             }
         }
-
         return WebType.HANGING_1;
     }
 
@@ -195,7 +213,6 @@ public class SpiderWebBlock extends BlockWithEntity {
                 updateHangingWebChain(worldAccess, pos);
             }
         }
-
         return super.getStateForNeighborUpdate(state, world, scheduledTickView, pos, direction, neighborPos, neighborState, random);
     }
 
@@ -225,7 +242,6 @@ public class SpiderWebBlock extends BlockWithEntity {
 
     private void updateHangingWebChain(WorldAccess world, BlockPos startPos) {
         BlockPos topPos = findTopOfChain(world, startPos);
-
         BlockPos currentPos = topPos;
         int chainIndex = 0;
 
@@ -249,7 +265,6 @@ public class SpiderWebBlock extends BlockWithEntity {
 
             BlockState currentState = world.getBlockState(currentPos);
             BlockState newState = currentState.with(WEB_TYPE, newType);
-
             world.setBlockState(currentPos, newState, Block.NOTIFY_ALL);
 
             currentPos = currentPos.down();
