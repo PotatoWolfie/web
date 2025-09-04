@@ -12,9 +12,9 @@ import org.slf4j.LoggerFactory;
 import potatowolfie.web.block.WebBlockEntities;
 import potatowolfie.web.block.WebBlocks;
 import potatowolfie.web.entity.WebEntities;
-import potatowolfie.web.entity.client.WebEntityModelLayers;
 import potatowolfie.web.entity.custom.BabySpiderEntity;
 import potatowolfie.web.item.WebItems;
+import potatowolfie.web.sound.WebSounds;
 import potatowolfie.web.world.feature.WebFeatures;
 import potatowolfie.web.world.gen.WebBiomeModifications;
 import potatowolfie.web.world.gen.WebWorldGeneration;
@@ -32,8 +32,8 @@ public class Web implements ModInitializer {
 		WebItems.registerModItems();
 		WebEntities.registerModEntities();
 		WebBlockEntities.registerBlockEntities();
-		WebEntityModelLayers.registerModelLayers();
 		WebFeatures.registerFeatures();
+		WebSounds.registerSounds();
 		WebWorldGeneration.init();
 		WebBiomeModifications.init();
 

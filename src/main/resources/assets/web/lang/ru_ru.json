@@ -3,10 +3,17 @@
   "item.web.spider_egg_shells": "Оболочка паучьего яйца",
   "item.web.spider_moss": "Паучий мох",
   "item.web.spider_web_block": "Паучья сеть",
+  "item.web.spider_grass": "Spider Grass",
 
   "block.web.spider_web": "Паучья сеть",
 
   "entity.web.spider_web": "Паучья сеть",
   "entity.web.spider_web_flying": "Летящая паучья сеть",
-  "entity.web.baby_spider": "Паучонок"
+  "entity.web.baby_spider": "Паучонок",
+
+  "web.subtitles.web.throw": "Web spit",
+  "web.subtitles.web.land": "Web lands",
+
+  "advancement.web.burn_the_nest.title": "Burn the Nest",
+  "advancement.web.burn_the_nest.description": "Burn a spider egg using a flint and steel"
 }

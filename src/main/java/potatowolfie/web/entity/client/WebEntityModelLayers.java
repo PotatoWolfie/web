@@ -1,10 +1,13 @@
 package potatowolfie.web.entity.client;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.util.Identifier;
 import potatowolfie.web.Web;
 
+@Environment(EnvType.CLIENT)
 public class WebEntityModelLayers {
     public static final EntityModelLayer SPIDER_WEB =
             new EntityModelLayer(Identifier.of(Web.MOD_ID, "spider_web"), "main");

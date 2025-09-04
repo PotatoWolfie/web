@@ -14,10 +14,7 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 import potatowolfie.web.Web;
-import potatowolfie.web.block.custom.SpiderEggBlock;
-import potatowolfie.web.block.custom.SpiderEggShellsBlock;
-import potatowolfie.web.block.custom.SpiderMossBlock;
-import potatowolfie.web.block.custom.SpiderWebBlock;
+import potatowolfie.web.block.custom.*;
 
 public class WebBlocks {
 
@@ -28,6 +25,7 @@ public class WebBlocks {
                     .instrument(NoteBlockInstrument.XYLOPHONE)
                     .sounds(BlockSoundGroup.HONEY)
                     .strength(0.5f)
+                    .hardness(0.5f)
             ));
 
     public static final Block SPIDER_EGG_SHELLS = registerBlock("spider_egg_shells",
@@ -37,6 +35,7 @@ public class WebBlocks {
                     .instrument(NoteBlockInstrument.XYLOPHONE)
                     .sounds(BlockSoundGroup.HONEY)
                     .strength(0.0f)
+                    .hardness(0.0f)
                     .breakInstantly()
                     .nonOpaque()
                     .noCollision()
@@ -49,6 +48,19 @@ public class WebBlocks {
                     .mapColor(MapColor.DARK_AQUA)
                     .sounds(BlockSoundGroup.MOSS_BLOCK)
                     .strength(0.1f)
+                    .hardness(0.1f)
+                    .burnable()
+            ));
+
+    public static final Block SPIDER_GRASS = registerBlock("spider_grass",
+            new SpiderGrassBlock(AbstractBlock.Settings.create()
+                    .registryKey(RegistryKey.of(Registries.BLOCK.getKey(), Identifier.of(Web.MOD_ID, "spider_grass")))
+                    .mapColor(MapColor.DARK_AQUA)
+                    .sounds(BlockSoundGroup.GRASS)
+                    .breakInstantly()
+                    .pistonBehavior(PistonBehavior.DESTROY)
+                    .noCollision()
+                    .replaceable()
                     .burnable()
             ));
 
@@ -68,6 +80,7 @@ public class WebBlocks {
         entries.addAfter(Blocks.SNIFFER_EGG, SPIDER_EGG);
         entries.addAfter(SPIDER_EGG, SPIDER_EGG_SHELLS);
         entries.addAfter(Blocks.PALE_HANGING_MOSS, SPIDER_MOSS);
+        entries.addAfter(SPIDER_MOSS, SPIDER_GRASS);
 
     }
 

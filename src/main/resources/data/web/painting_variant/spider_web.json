@@ -1,0 +1,13 @@
+{
+  "asset_id": "web:spider_web",
+  "author": {
+    "color": "gray",
+    "translate": "painting.web.spider_web.author"
+  },
+  "height": 3,
+  "title": {
+    "color": "yellow",
+    "translate": "painting.web.spider_web.title"
+  },
+  "width": 4
+}

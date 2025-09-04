@@ -50,7 +50,6 @@ public class CaveSpiderModelMixin {
 
     @Inject(method = "setAngles(Lnet/minecraft/client/render/entity/state/LivingEntityRenderState;)V", at = @At("TAIL"))
     private void applyAllSpiderAnimations(LivingEntityRenderState renderState, CallbackInfo ci) {
-        // Handle cave spider animations
         if (renderState instanceof CaveSpiderEntityRenderState caveSpiderRenderState) {
             if (this.caveSpiderIdleAnimation != null && caveSpiderRenderState.idleAnimationState.isRunning()) {
                 this.caveSpiderIdleAnimation.apply(caveSpiderRenderState.idleAnimationState, renderState.age, 1.0F);

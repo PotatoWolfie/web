@@ -19,6 +19,8 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
 import net.minecraft.entity.player.PlayerEntity;
+import potatowolfie.web.block.WebBlocks;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +55,7 @@ public class SpiderMossBlock extends Block implements Fertilizable {
 
     @Override
     public boolean isFertilizable(WorldView world, BlockPos pos, BlockState state) {
-        return !getValidSpreadPositions(world, pos).isEmpty();
+        return !getValidSpreadPositions(world, pos).isEmpty() || !getValidGrassPositions(world, pos).isEmpty();
     }
 
     @Override
@@ -63,21 +65,38 @@ public class SpiderMossBlock extends Block implements Fertilizable {
 
     @Override
     public void grow(ServerWorld world, Random random, BlockPos pos, BlockState state) {
-        List<BlockPos> validPositions = getValidSpreadPositions(world, pos);
+        List<BlockPos> validSpreadPositions = getValidSpreadPositions(world, pos);
+        List<BlockPos> validGrassPositions = getValidGrassPositions(world, pos);
 
-        if (!validPositions.isEmpty()) {
+        if (!validSpreadPositions.isEmpty()) {
             int spreadCount = 3 + random.nextInt(6);
-            spreadCount = Math.min(spreadCount, validPositions.size());
+            spreadCount = Math.min(spreadCount, validSpreadPositions.size());
 
             for (int i = 0; i < spreadCount; i++) {
-                BlockPos targetPos = validPositions.get(random.nextInt(validPositions.size()));
-                validPositions.remove(targetPos);
+                BlockPos targetPos = validSpreadPositions.get(random.nextInt(validSpreadPositions.size()));
+                validSpreadPositions.remove(targetPos);
 
                 world.setBlockState(targetPos, this.getDefaultState());
 
                 world.spawnParticles(ParticleTypes.HAPPY_VILLAGER,
                         targetPos.getX() + 0.5, targetPos.getY() + 0.5, targetPos.getZ() + 0.5,
-                        10, 0.5, 0.5, 0.5, 0.0);
+                        8, 0.5, 0.5, 0.5, 0.0);
+            }
+        }
+
+        if (!validGrassPositions.isEmpty()) {
+            int grassCount = 1 + random.nextInt(4);
+            grassCount = Math.min(grassCount, validGrassPositions.size());
+
+            for (int i = 0; i < grassCount; i++) {
+                BlockPos targetPos = validGrassPositions.get(random.nextInt(validGrassPositions.size()));
+                validGrassPositions.remove(targetPos);
+
+                world.setBlockState(targetPos, WebBlocks.SPIDER_GRASS.getDefaultState());
+
+                world.spawnParticles(ParticleTypes.HAPPY_VILLAGER,
+                        targetPos.getX() + 0.5, targetPos.getY() + 0.5, targetPos.getZ() + 0.5,
+                        5, 0.3, 0.3, 0.3, 0.0);
             }
         }
     }
@@ -85,9 +104,13 @@ public class SpiderMossBlock extends Block implements Fertilizable {
     private List<BlockPos> getValidSpreadPositions(WorldView world, BlockPos center) {
         List<BlockPos> validPositions = new ArrayList<>();
 
-        for (int x = -2; x <= 2; x++) {
+        for (int x = -1; x <= 1; x++) {
             for (int y = -1; y <= 1; y++) {
-                for (int z = -2; z <= 2; z++) {
+                for (int z = -1; z <= 1; z++) {
+                    if (x == 0 && y == 0 && z == 0) {
+                        continue;
+                    }
+
                     BlockPos checkPos = center.add(x, y, z);
 
                     if (canSpreadTo(world, checkPos)) {
@@ -98,6 +121,31 @@ public class SpiderMossBlock extends Block implements Fertilizable {
         }
 
         return validPositions;
+    }
+
+    private List<BlockPos> getValidGrassPositions(WorldView world, BlockPos center) {
+        List<BlockPos> validPositions = new ArrayList<>();
+
+        for (int x = -1; x <= 1; x++) {
+            for (int z = -1; z <= 1; z++) {
+                for (int y = -1; y <= 2; y++) {
+                    BlockPos checkPos = center.add(x, y, z);
+
+                    if (canSpawnGrassAt(world, checkPos)) {
+                        validPositions.add(checkPos);
+                    }
+                }
+            }
+        }
+
+        return validPositions;
+    }
+
+    private boolean canSpawnGrassAt(WorldView world, BlockPos pos) {
+        BlockState state = world.getBlockState(pos);
+        BlockState belowState = world.getBlockState(pos.down());
+
+        return state.isAir() && belowState.isOf(this);
     }
 
     private boolean canSpreadTo(WorldView world, BlockPos pos) {
@@ -121,17 +169,10 @@ public class SpiderMossBlock extends Block implements Fertilizable {
 
     @Override
     public boolean hasRandomTicks(BlockState state) {
-        return true;
+        return false;
     }
 
     @Override
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-        if (random.nextInt(100) == 0) {
-            List<BlockPos> validPositions = getValidSpreadPositions(world, pos);
-            if (!validPositions.isEmpty()) {
-                BlockPos targetPos = validPositions.get(random.nextInt(validPositions.size()));
-                world.setBlockState(targetPos, this.getDefaultState());
-            }
-        }
     }
 }

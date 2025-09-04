@@ -2,9 +2,7 @@ package potatowolfie.web.block.custom;
 
 import com.mojang.serialization.MapCodec;
 import net.minecraft.block.*;
-import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.sound.SoundCategory;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;

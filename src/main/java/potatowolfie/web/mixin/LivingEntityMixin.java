@@ -3,6 +3,7 @@ package potatowolfie.web.mixin;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
@@ -40,7 +41,15 @@ public class LivingEntityMixin {
 
         if (SpiderWebEntity.shouldPreventMovement(entity)) {
             ci.cancel();
-            entity.setVelocity(0, 0, 0);
+
+            if (entity instanceof PlayerEntity) {
+                entity.setVelocity(0, entity.getVelocity().y * 0.5, 0);
+                entity.setMovementSpeed(0.0f);
+
+                entity.velocityModified = true;
+            } else {
+                entity.setVelocity(0, 0, 0);
+            }
         }
     }
 

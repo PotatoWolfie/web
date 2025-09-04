@@ -15,6 +15,8 @@ public class WebClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
 
+        WebEntityModelLayers.registerModelLayers();
+
         EntityModelLayerRegistry.registerModelLayer(WebEntityModelLayers.SPIDER_WEB, SpiderWebModel::getTexturedModelData);
         EntityRendererRegistry.register(WebEntities.SPIDER_WEB, SpiderWebRenderer::new);
         EntityModelLayerRegistry.registerModelLayer(WebEntityModelLayers.SPIDER_WEB_FLYING, SpiderWebProjectileModel::getTexturedModelData);
@@ -26,6 +28,7 @@ public class WebClient implements ClientModInitializer {
 
         BlockRenderLayerMap.putBlock(WebBlocks.SPIDER_EGG_SHELLS, BlockRenderLayer.CUTOUT);
         BlockRenderLayerMap.putBlock(WebBlocks.SPIDER_WEB_BLOCK, BlockRenderLayer.CUTOUT);
+        BlockRenderLayerMap.putBlock(WebBlocks.SPIDER_GRASS, BlockRenderLayer.CUTOUT);
 
         BlockEntityRendererFactories.register(WebBlockEntities.SPIDER_WEB_BLOCK_ENTITY, SpiderWebBlockEntityRenderer::new);
     }

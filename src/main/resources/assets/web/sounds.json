@@ -1,0 +1,16 @@
+{
+  "web_throw": {
+    "subtitle": "web.subtitles.web.throw",
+    "sounds": [
+      "web:web_throw",
+      "web:web_throw_2"
+    ]
+  },
+  "web_land": {
+    "subtitle": "web.subtitles.web.land",
+    "sounds": [
+      "web:web_land_2",
+      "web:web_land_2"
+    ]
+  }
+}

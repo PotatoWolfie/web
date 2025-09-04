@@ -54,7 +54,6 @@ public class SpiderEggClusterFeature extends Feature<SpiderEggClusterFeatureConf
 
             BlockPos floorPos = findFloorPosition(world, new BlockPos(x, actualOrigin.getY(), z));
             if (floorPos != null && canPlaceNest(world, floorPos)) {
-                // Force replacement of the block
                 world.setBlockState(floorPos, WebBlocks.SPIDER_MOSS.getDefaultState(), Block.NOTIFY_ALL | Block.FORCE_STATE);
                 nestPositions.add(floorPos);
 
@@ -83,6 +82,7 @@ public class SpiderEggClusterFeature extends Feature<SpiderEggClusterFeatureConf
         generateEggsOnNests(world, nestPositions, random, config, mainEggPositions);
         generateStandaloneEggs(world, actualOrigin, random, nestPositions, mainEggPositions);
         generateSpiderWebBlocks(world, actualOrigin, random, nestPositions);
+        generateSpiderGrassOnMoss(world, nestPositions, random);
         placeSpiderEggShells(world, actualOrigin, nestPositions, random, config);
 
         return !nestPositions.isEmpty();
@@ -279,6 +279,52 @@ public class SpiderEggClusterFeature extends Feature<SpiderEggClusterFeatureConf
 
                 if (placedAny) {
                     hangingWebsPlaced++;
+                }
+            }
+        }
+    }
+
+    private void generateSpiderGrassOnMoss(StructureWorldAccess world, Set<BlockPos> nestPositions, Random random) {
+        int targetGrassCount = Math.max(3, nestPositions.size() * random.nextBetween(30, 45) / 100);
+        int grassPlaced = 0;
+
+        for (BlockPos nestPos : nestPositions) {
+            if (grassPlaced >= targetGrassCount) break;
+
+            BlockPos grassPos = nestPos.up();
+
+            if (world.getBlockState(grassPos).isAir() &&
+                    !world.getBlockState(grassPos).isOf(WebBlocks.SPIDER_EGG)) {
+
+                if (random.nextFloat() < 0.35f) {
+                    world.setBlockState(grassPos, WebBlocks.SPIDER_GRASS.getDefaultState(), Block.NOTIFY_ALL);
+                    grassPlaced++;
+                }
+            }
+        }
+
+        int additionalGrass = random.nextBetween(2, 6);
+        for (int i = 0; i < additionalGrass && grassPlaced < targetGrassCount + additionalGrass; i++) {
+            if (nestPositions.isEmpty()) break;
+
+            BlockPos[] nestArray = nestPositions.toArray(new BlockPos[0]);
+            BlockPos baseNest = nestArray[random.nextInt(nestArray.length)];
+
+            for (BlockPos nearbyPos : BlockPos.iterate(
+                    baseNest.add(-2, -1, -2),
+                    baseNest.add(2, 1, 2))) {
+
+                if (world.getBlockState(nearbyPos).isOf(WebBlocks.SPIDER_MOSS)) {
+                    BlockPos grassPos = nearbyPos.up();
+
+                    if (world.getBlockState(grassPos).isAir() &&
+                            !world.getBlockState(grassPos).isOf(WebBlocks.SPIDER_EGG) &&
+                            random.nextFloat() < 0.25f) {
+
+                        world.setBlockState(grassPos, WebBlocks.SPIDER_GRASS.getDefaultState(), Block.NOTIFY_ALL);
+                        grassPlaced++;
+                        break;
+                    }
                 }
             }
         }

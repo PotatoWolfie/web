@@ -2,12 +2,11 @@ package potatowolfie.web.entity.custom;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.projectile.ArrowEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
-import net.minecraft.entity.projectile.thrown.ThrownItemEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -16,6 +15,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import potatowolfie.web.entity.WebEntities;
 import potatowolfie.web.item.WebItems;
+import potatowolfie.web.sound.WebSounds;
 
 public class SpiderWebProjectileEntity extends PersistentProjectileEntity {
 
@@ -24,6 +24,11 @@ public class SpiderWebProjectileEntity extends PersistentProjectileEntity {
         if (owner != null) {
             this.setOwner(owner);
             this.setPosition(owner.getX(), owner.getEyeY() - 0.3, owner.getZ());
+
+            if (!world.isClient()) {
+                world.playSound(null, owner.getX(), owner.getEyeY(), owner.getZ(),
+                        WebSounds.WEB_THROW, SoundCategory.PLAYERS, 1.0F, 1.0F);
+            }
         }
     }
 
@@ -51,6 +56,11 @@ public class SpiderWebProjectileEntity extends PersistentProjectileEntity {
 
     @Override
     protected void onEntityHit(EntityHitResult entityHitResult) {
+        if (!this.getWorld().isClient()) {
+            Vec3d pos = this.getPos();
+            this.getWorld().playSound(null, pos.x, pos.y, pos.z,
+                    WebSounds.WEB_LAND, SoundCategory.NEUTRAL, 0.8F, 1.0F);
+        }
     }
 
     @Override
@@ -63,6 +73,10 @@ public class SpiderWebProjectileEntity extends PersistentProjectileEntity {
 
         World world = this.getWorld();
         if (world != null && !world.isClient) {
+            Vec3d pos = this.getPos();
+            world.playSound(null, pos.x, pos.y, pos.z,
+                    WebSounds.WEB_LAND, SoundCategory.BLOCKS, 0.8F, 1.0F);
+
             BlockPos hitPos = blockHitResult.getBlockPos();
             Direction hitSide = blockHitResult.getSide();
 
@@ -77,6 +91,11 @@ public class SpiderWebProjectileEntity extends PersistentProjectileEntity {
     @Override
     protected ItemStack getDefaultItemStack() {
         return new ItemStack(WebItems.SPIDER_WEB);
+    }
+
+    @Override
+    protected SoundEvent getHitSound() {
+        return SoundEvents.INTENTIONALLY_EMPTY;
     }
 
     private void spawnSpiderWebEntity() {

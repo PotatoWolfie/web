@@ -1,17 +1,10 @@
 package potatowolfie.web.advancement;
 
-import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.advancement.AdvancementProgress;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.Items;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import potatowolfie.web.block.WebBlocks;
 
 public class BurnTheNestHandler {
 

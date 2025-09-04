@@ -3,10 +3,20 @@
   "item.web.spider_egg_shells": "Spider Egg Shells",
   "item.web.spider_moss": "Spider Moss",
   "item.web.spider_web_block": "Spider Web",
+  "item.web.spider_grass": "Spider Grass",
 
   "block.web.spider_web": "Spider Web",
 
   "entity.web.spider_web": "Spider Web",
   "entity.web.spider_web_flying": "Flying Spider Web",
-  "entity.web.baby_spider": "Baby Spider"
+  "entity.web.baby_spider": "Baby Spider",
+
+  "web.subtitles.web.throw": "Web spit",
+  "web.subtitles.web.land": "Web lands",
+
+  "advancement.web.burn_the_nest.title": "Burn the Nest",
+  "advancement.web.burn_the_nest.description": "Burn a spider egg using a flint and steel",
+
+  "painting.web.spider_web.author": "PotatoWolfie",
+  "painting.web.spider_web.title": "Spider Web"
 }

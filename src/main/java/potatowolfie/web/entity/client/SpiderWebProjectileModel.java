@@ -3,7 +3,6 @@ package potatowolfie.web.entity.client;
 import net.minecraft.client.model.*;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.entity.model.EntityModel;
-import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.render.entity.state.ProjectileEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 

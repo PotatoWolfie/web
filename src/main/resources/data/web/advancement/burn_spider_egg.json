@@ -4,10 +4,10 @@
       "id": "web:spider_egg"
     },
     "title": {
-      "text": "Burn the Nest"
+      "translate": "advancement.web.burn_the_nest.title"
     },
     "description": {
-      "text": "Burn a spider egg using a flint and steel"
+      "translate": "advancement.web.burn_the_nest.description"
     },
     "frame": "task",
     "show_toast": true,
