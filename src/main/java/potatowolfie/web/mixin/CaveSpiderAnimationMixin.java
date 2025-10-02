@@ -62,7 +62,7 @@ public class CaveSpiderAnimationMixin implements CaveSpiderAnimationInterface {
         }
 
         CaveSpiderEntity caveSpider = (CaveSpiderEntity) spider;
-        World world = caveSpider.getWorld();
+        World world = caveSpider.getEntityWorld();
 
         if (caveSpider.isRemoved() || world == null) {
             return;
@@ -115,7 +115,7 @@ public class CaveSpiderAnimationMixin implements CaveSpiderAnimationInterface {
 
     @Unique
     private void setCaveSpiderState(CaveSpiderState newState, CaveSpiderEntity caveSpider) {
-        World world = caveSpider.getWorld();
+        World world = caveSpider.getEntityWorld();
 
         if (world == null || this.caveSpiderState == newState || isCaveSpiderChangingState) {
             return;
@@ -141,7 +141,7 @@ public class CaveSpiderAnimationMixin implements CaveSpiderAnimationInterface {
         }
 
         CaveSpiderEntity caveSpider = (CaveSpiderEntity) spider;
-        World world = caveSpider.getWorld();
+        World world = caveSpider.getEntityWorld();
 
         if (CAVE_SPIDER_DATA_ID_STATE.equals(data) && world != null && world.isClient()) {
             try {
@@ -181,7 +181,7 @@ public class CaveSpiderAnimationMixin implements CaveSpiderAnimationInterface {
             this.caveSpiderState = loadedState;
 
             CaveSpiderEntity caveSpider = (CaveSpiderEntity) spider;
-            World world = caveSpider.getWorld();
+            World world = caveSpider.getEntityWorld();
 
             if (world != null && !world.isClient()) {
                 caveSpider.getDataTracker().set(CAVE_SPIDER_DATA_ID_STATE, loadedState.ordinal());

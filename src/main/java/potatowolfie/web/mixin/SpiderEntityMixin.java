@@ -169,7 +169,7 @@ public class SpiderEntityMixin implements WebSpiderInterface, SpiderAnimationInt
         Random random = world.getRandom();
 
         if (random.nextInt(100) < 3) {
-            BabySpiderEntity babySpider = WebEntities.BABY_SPIDER.create(spider.getWorld(), SpawnReason.JOCKEY);
+            BabySpiderEntity babySpider = WebEntities.BABY_SPIDER.create(spider.getEntityWorld(), SpawnReason.JOCKEY);
             if (babySpider != null) {
                 babySpider.refreshPositionAndAngles(
                         spider.getX(),
@@ -180,7 +180,7 @@ public class SpiderEntityMixin implements WebSpiderInterface, SpiderAnimationInt
                 );
                 babySpider.initialize(world, difficulty, spawnReason, null);
                 babySpider.startRiding(spider);
-                spider.getWorld().spawnEntity(babySpider);
+                spider.getEntityWorld().spawnEntity(babySpider);
             }
         }
     }
@@ -190,7 +190,7 @@ public class SpiderEntityMixin implements WebSpiderInterface, SpiderAnimationInt
         if (isCaveSpider()) return;
 
         SpiderEntity spider = (SpiderEntity) (Object) this;
-        World world = spider.getWorld();
+        World world = spider.getEntityWorld();
 
         if (spider.isRemoved() || world == null) {
             return;
@@ -245,7 +245,7 @@ public class SpiderEntityMixin implements WebSpiderInterface, SpiderAnimationInt
     @Inject(method = "tick", at = @At("HEAD"))
     private void syncStateFromDataTracker(CallbackInfo ci) {
         SpiderEntity spider = (SpiderEntity) (Object) this;
-        World world = spider.getWorld();
+        World world = spider.getEntityWorld();
 
         if (world != null && world.isClient()) {
             try {
@@ -266,7 +266,7 @@ public class SpiderEntityMixin implements WebSpiderInterface, SpiderAnimationInt
 
         switch (spiderState) {
             case SHOOTING:
-                if (stateTimer == 17 && shootTarget != null && !spider.getWorld().isClient()) {
+                if (stateTimer == 17 && shootTarget != null && !spider.getEntityWorld().isClient()) {
                     performWebShot(shootTarget);
                 }
                 if (stateTimer >= 20) {
@@ -336,7 +336,7 @@ public class SpiderEntityMixin implements WebSpiderInterface, SpiderAnimationInt
     @Unique
     private void setSpiderState(SpiderState newState) {
         SpiderEntity spider = (SpiderEntity) (Object) this;
-        World world = spider.getWorld();
+        World world = spider.getEntityWorld();
 
         if (world == null || this.spiderState == newState || isSpiderChangingState) {
             return;
@@ -361,7 +361,7 @@ public class SpiderEntityMixin implements WebSpiderInterface, SpiderAnimationInt
         if (isWebImmune(target)) return;
 
         SpiderEntity spider = (SpiderEntity) (Object) this;
-        World world = spider.getWorld();
+        World world = spider.getEntityWorld();
 
         shootTarget = target;
         setSpiderState(SpiderState.SHOOTING);
@@ -386,7 +386,7 @@ public class SpiderEntityMixin implements WebSpiderInterface, SpiderAnimationInt
     @Unique
     private void performWebShot(LivingEntity target) {
         SpiderEntity spider = (SpiderEntity) (Object) this;
-        World world = spider.getWorld();
+        World world = spider.getEntityWorld();
 
         SpiderWebProjectileEntity webProjectile = new SpiderWebProjectileEntity(world, spider);
         webProjectile.setPosition(spider.getX(), spider.getEyeY() - 0.1, spider.getZ());
@@ -540,7 +540,7 @@ public class SpiderEntityMixin implements WebSpiderInterface, SpiderAnimationInt
             return;
         }
 
-        World world = spider.getWorld();
+        World world = spider.getEntityWorld();
 
         if (SPIDER_DATA_ID_STATE.equals(data) && world != null && world.isClient()) {
             try {
@@ -581,7 +581,7 @@ public class SpiderEntityMixin implements WebSpiderInterface, SpiderAnimationInt
             SpiderState loadedState = SpiderState.valueOf(stateString);
             this.spiderState = loadedState;
 
-            World world = spider.getWorld();
+            World world = spider.getEntityWorld();
 
             if (world != null && !world.isClient()) {
                 spider.getDataTracker().set(SPIDER_DATA_ID_STATE, loadedState.ordinal());

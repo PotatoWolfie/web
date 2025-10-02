@@ -13,13 +13,7 @@ public class SpiderWebProjectileModel extends EntityModel<ProjectileEntityRender
 
 	public SpiderWebProjectileModel(ModelPart root) {
 		super(root);
-		if (root == null) {
-			throw new IllegalArgumentException("ModelPart root cannot be null");
-		}
-		this.bb_main = root.getChild("bb_main");
-		if (this.bb_main == null) {
-			throw new IllegalStateException("bb_main child part not found in model");
-		}
+        this.bb_main = root.getChild("bb_main");
 	}
 
 	public static TexturedModelData getTexturedModelData() {
@@ -27,7 +21,7 @@ public class SpiderWebProjectileModel extends EntityModel<ProjectileEntityRender
 		ModelPartData modelPartData = modelData.getRoot();
 		ModelPartData bb_main = modelPartData.addChild("bb_main", ModelPartBuilder.create(), ModelTransform.origin(0.0F, 24.0F, 0.0F));
 
-		ModelPartData cube_r1 = bb_main.addChild("cube_r1", ModelPartBuilder.create().uv(0, 0).cuboid(-2.5F, -2.5F, -5.0F, 5.0F, 5.0F, 10.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, -2.5F, 0.0F, 0.0F, -1.5708F, 0.0F));
+		ModelPartData cube_r1 = bb_main.addChild("cube_r1", ModelPartBuilder.create().uv(0, 10).cuboid(-2.5F, -2.5F, -5.0F, 5.0F, 5.0F, 10.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, -2.5F, 0.0F, 0.0F, -1.5708F, 0.0F));
 		return TexturedModelData.of(modelData, 32, 32);
 	}
 
@@ -36,9 +30,6 @@ public class SpiderWebProjectileModel extends EntityModel<ProjectileEntityRender
 	}
 
 	public void renderWithTexture(MatrixStack matrices, VertexConsumer vertexConsumer, int light, int overlay, int color) {
-		if (matrices == null || vertexConsumer == null || bb_main == null) {
-			return;
-		}
 		bb_main.render(matrices, vertexConsumer, light, overlay, color);
 	}
 }

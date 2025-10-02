@@ -56,9 +56,9 @@ public class SpiderWebProjectileEntity extends PersistentProjectileEntity {
 
     @Override
     protected void onEntityHit(EntityHitResult entityHitResult) {
-        if (!this.getWorld().isClient()) {
-            Vec3d pos = this.getPos();
-            this.getWorld().playSound(null, pos.x, pos.y, pos.z,
+        if (!this.getEntityWorld().isClient()) {
+            Vec3d pos = this.getEntityPos();
+            this.getEntityWorld().playSound(null, pos.x, pos.y, pos.z,
                     WebSounds.WEB_LAND, SoundCategory.NEUTRAL, 0.8F, 1.0F);
         }
     }
@@ -71,9 +71,9 @@ public class SpiderWebProjectileEntity extends PersistentProjectileEntity {
             return;
         }
 
-        World world = this.getWorld();
-        if (world != null && !world.isClient) {
-            Vec3d pos = this.getPos();
+        World world = this.getEntityWorld();
+        if (world != null && !world.isClient()) {
+            Vec3d pos = this.getEntityPos();
             world.playSound(null, pos.x, pos.y, pos.z,
                     WebSounds.WEB_LAND, SoundCategory.BLOCKS, 0.8F, 1.0F);
 
@@ -110,7 +110,7 @@ public class SpiderWebProjectileEntity extends PersistentProjectileEntity {
             return;
         }
 
-        World world = this.getWorld();
+        World world = this.getEntityWorld();
         if (world == null) {
             return;
         }

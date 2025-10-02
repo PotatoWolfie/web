@@ -3,8 +3,10 @@ package potatowolfie.web.entity.client;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
+import net.minecraft.client.render.state.CameraRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import potatowolfie.web.Web;
@@ -30,10 +32,10 @@ public class BabySpiderRenderer extends MobEntityRenderer<BabySpiderEntity, Baby
     }
 
     @Override
-    public void render(BabySpiderRenderState renderState, MatrixStack matrices, VertexConsumerProvider vertexConsumerProvider, int light) {
+    public void render(BabySpiderRenderState renderState, MatrixStack matrices, OrderedRenderCommandQueue queue, CameraRenderState cameraRenderState) {
         matrices.push();
         matrices.scale(0.75F, 0.75F, 0.75F);
-        super.render(renderState, matrices, vertexConsumerProvider, light);
+        super.render(renderState, matrices, queue, cameraRenderState);
         matrices.pop();
     }
 

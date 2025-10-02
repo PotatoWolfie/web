@@ -79,7 +79,7 @@ public class SpiderWebEntity extends Entity {
         this.setPosition(x, y, z);
         this.setBoundingBox(new Box(x - 1.0, y - 0.5, z - 1.0, x + 1.0, y + 1.5, z + 1.0));
 
-        if (world.isClient) {
+        if (world.isClient()) {
             this.webDieAnimationState.start(0);
             this.isDieAnimationRunning = true;
         }
@@ -92,14 +92,14 @@ public class SpiderWebEntity extends Entity {
 
     @Override
     public void tick() {
-        if (this.isRemoved() || this.getWorld() == null) {
+        if (this.isRemoved() || this.getEntityWorld() == null) {
             return;
         }
 
         animationStartedThisTick = false;
         super.tick();
 
-        if (!this.getWorld().isClient) {
+        if (!this.getEntityWorld().isClient()) {
             this.age++;
 
             if (this.age == 1) {
@@ -145,8 +145,8 @@ public class SpiderWebEntity extends Entity {
             return;
         }
 
-        Box searchBox = Box.of(this.getPos(), 128, 64, 128);
-        List<SpiderEntity> nearbySpiders = this.getWorld().getEntitiesByClass(
+        Box searchBox = Box.of(this.getEntityPos(), 128, 64, 128);
+        List<SpiderEntity> nearbySpiders = this.getEntityWorld().getEntitiesByClass(
                 SpiderEntity.class,
                 searchBox,
                 spider -> spider.isAlive()
@@ -178,7 +178,7 @@ public class SpiderWebEntity extends Entity {
     }
 
     private void updateAnimations() {
-        if (this.getWorld().isClient()) {
+        if (this.getEntityWorld().isClient()) {
             if (!isDieAnimationRunning) {
                 this.webDieAnimationState.start(this.age);
                 this.isDieAnimationRunning = true;
@@ -201,7 +201,7 @@ public class SpiderWebEntity extends Entity {
             this.previousState = this.webState;
             this.webState = newState;
 
-            if (!this.getWorld().isClient()) {
+            if (!this.getEntityWorld().isClient()) {
                 this.dataTracker.set(DATA_ID_STATE, newState.ordinal());
             } else {
                 startStateAnimation(newState);
@@ -212,7 +212,7 @@ public class SpiderWebEntity extends Entity {
     }
 
     private void startStateAnimation(WebState state) {
-        if (!this.getWorld().isClient() || animationStartedThisTick) return;
+        if (!this.getEntityWorld().isClient() || animationStartedThisTick) return;
 
         animationStartedThisTick = true;
 
@@ -221,14 +221,14 @@ public class SpiderWebEntity extends Entity {
     }
 
     private void stopAllAnimations() {
-        if (this.getWorld().isClient()) {
+        if (this.getEntityWorld().isClient()) {
             webDieAnimationState.stop();
         }
     }
 
     @Override
     public void onTrackedDataSet(TrackedData<?> data) {
-        if (DATA_ID_STATE.equals(data) && this.getWorld().isClient()) {
+        if (DATA_ID_STATE.equals(data) && this.getEntityWorld().isClient()) {
             WebState newState = WebState.values()[this.dataTracker.get(DATA_ID_STATE)];
             if (this.webState != newState && !isChangingState) {
                 isChangingState = true;
@@ -247,7 +247,7 @@ public class SpiderWebEntity extends Entity {
     private void trapEntitiesInRange() {
         Box webBox = this.getBoundingBox().expand(0.1);
 
-        List<LivingEntity> nearbyEntities = this.getWorld().getEntitiesByClass(
+        List<LivingEntity> nearbyEntities = this.getEntityWorld().getEntitiesByClass(
                 LivingEntity.class,
                 webBox,
                 entity -> entity.isAlive() && !isWebImmune(entity)
@@ -319,7 +319,7 @@ public class SpiderWebEntity extends Entity {
 
     @Override
     public void remove(RemovalReason reason) {
-        if (!this.getWorld().isClient) {
+        if (!this.getEntityWorld().isClient()) {
             releaseAllEntities();
             clearSpiderTargets();
         }
@@ -349,7 +349,7 @@ public class SpiderWebEntity extends Entity {
     protected void readCustomData(ReadView view) {
         String stateString = view.getString("WebState", "DYING");
         this.webState = WebState.DYING;
-        if (!this.getWorld().isClient()) {
+        if (!this.getEntityWorld().isClient()) {
             this.dataTracker.set(DATA_ID_STATE, WebState.DYING.ordinal());
         }
     }

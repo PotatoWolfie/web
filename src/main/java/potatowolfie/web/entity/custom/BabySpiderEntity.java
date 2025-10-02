@@ -107,7 +107,7 @@ public class BabySpiderEntity extends HostileEntity {
     }
 
     private void updateAnimations() {
-        if (this.getWorld().isClient()) {
+        if (this.getEntityWorld().isClient()) {
             if (this.spiderState == SpiderState.WALKING) {
                 if (!isWalkingAnimationRunning) {
                     this.walkingAnimationState.start(this.age);
@@ -154,7 +154,7 @@ public class BabySpiderEntity extends HostileEntity {
             this.previousState = this.spiderState;
             this.spiderState = newState;
 
-            if (!this.getWorld().isClient()) {
+            if (!this.getEntityWorld().isClient()) {
                 this.dataTracker.set(DATA_ID_STATE, newState.ordinal());
             } else {
                 startStateAnimation(newState);
@@ -165,7 +165,7 @@ public class BabySpiderEntity extends HostileEntity {
     }
 
     private void startStateAnimation(SpiderState state) {
-        if (!this.getWorld().isClient() || animationStartedThisTick) return;
+        if (!this.getEntityWorld().isClient() || animationStartedThisTick) return;
 
         animationStartedThisTick = true;
 
@@ -187,7 +187,7 @@ public class BabySpiderEntity extends HostileEntity {
     }
 
     private void stopAllAnimations() {
-        if (this.getWorld().isClient()) {
+        if (this.getEntityWorld().isClient()) {
             idleAnimationState.stop();
             walkingAnimationState.stop();
         }
@@ -195,7 +195,7 @@ public class BabySpiderEntity extends HostileEntity {
 
     @Override
     public void onTrackedDataSet(TrackedData<?> data) {
-        if (DATA_ID_STATE.equals(data) && this.getWorld().isClient()) {
+        if (DATA_ID_STATE.equals(data) && this.getEntityWorld().isClient()) {
             SpiderState newState = SpiderState.values()[this.dataTracker.get(DATA_ID_STATE)];
             if (this.spiderState != newState && !isChangingState) {
                 isChangingState = true;
@@ -217,14 +217,14 @@ public class BabySpiderEntity extends HostileEntity {
 
     @Override
     public void tick() {
-        if (this.isRemoved() || this.getWorld() == null) {
+        if (this.isRemoved() || this.getEntityWorld() == null) {
             return;
         }
 
         animationStartedThisTick = false;
         super.tick();
 
-        if (!this.getWorld().isClient) {
+        if (!this.getEntityWorld().isClient()) {
             this.setClimbingWall(this.horizontalCollision);
 
             if (this.getNavigation().isIdle() && this.age % 20 == 0) {
@@ -264,10 +264,10 @@ public class BabySpiderEntity extends HostileEntity {
     }
 
     private void matureIntoSpider() {
-        if (this.getWorld().isClient) return;
+        if (this.getEntityWorld().isClient()) return;
 
         try {
-            SpiderEntity adultSpider = EntityType.SPIDER.create(this.getWorld(), SpawnReason.CONVERSION);
+            SpiderEntity adultSpider = EntityType.SPIDER.create(this.getEntityWorld(), SpawnReason.CONVERSION);
             if (adultSpider != null) {
                 adultSpider.refreshPositionAndAngles(
                         this.getX(), this.getY(), this.getZ(),
@@ -295,7 +295,7 @@ public class BabySpiderEntity extends HostileEntity {
                     }
                 }
 
-                this.getWorld().spawnEntity(adultSpider);
+                this.getEntityWorld().spawnEntity(adultSpider);
 
                 this.discard();
             }
@@ -306,7 +306,7 @@ public class BabySpiderEntity extends HostileEntity {
     }
 
     public void forceMature() {
-        if (!this.getWorld().isClient) {
+        if (!this.getEntityWorld().isClient()) {
             this.matureIntoSpider();
         }
     }
@@ -374,7 +374,7 @@ public class BabySpiderEntity extends HostileEntity {
 
         Random spawnRandom = world.getRandom();
         if (spawnRandom.nextInt(100) == 0) {
-            SkeletonEntity skeletonEntity = EntityType.SKELETON.create(this.getWorld(), SpawnReason.JOCKEY);
+            SkeletonEntity skeletonEntity = EntityType.SKELETON.create(this.getEntityWorld(), SpawnReason.JOCKEY);
             if (skeletonEntity != null) {
                 skeletonEntity.refreshPositionAndAngles(this.getX(), this.getY(), this.getZ(), this.getYaw(), 0.0F);
                 skeletonEntity.initialize(world, difficulty, spawnReason, null);
@@ -419,7 +419,7 @@ public class BabySpiderEntity extends HostileEntity {
             try {
                 SpiderState loadedState = SpiderState.valueOf(stateString);
                 this.spiderState = loadedState;
-                if (!this.getWorld().isClient()) {
+                if (!this.getEntityWorld().isClient()) {
                     this.dataTracker.set(DATA_ID_STATE, loadedState.ordinal());
                 }
             } catch (IllegalArgumentException e) {
@@ -454,7 +454,7 @@ public class BabySpiderEntity extends HostileEntity {
         }
 
         public boolean shouldContinue() {
-            int lightLevel = this.mob.getWorld().getLightLevel(this.mob.getBlockPos());
+            int lightLevel = this.mob.getEntityWorld().getLightLevel(this.mob.getBlockPos());
             float f = lightLevel / 15.0F;
             if (f >= 0.5F && this.mob.getRandom().nextInt(100) == 0) {
                 this.mob.setTarget(null);
@@ -471,7 +471,7 @@ public class BabySpiderEntity extends HostileEntity {
         }
 
         public boolean canStart() {
-            int lightLevel = this.mob.getWorld().getLightLevel(this.mob.getBlockPos());
+            int lightLevel = this.mob.getEntityWorld().getLightLevel(this.mob.getBlockPos());
             float f = lightLevel / 15.0F;
             return !(f >= 0.5F) && super.canStart();
         }

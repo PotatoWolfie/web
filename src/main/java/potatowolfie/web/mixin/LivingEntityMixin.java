@@ -70,7 +70,7 @@ public class LivingEntityMixin {
     private void checkSpiderWebClimbing(CallbackInfoReturnable<Boolean> cir) {
         LivingEntity entity = (LivingEntity) (Object) this;
         BlockPos pos = entity.getBlockPos();
-        BlockState state = entity.getWorld().getBlockState(pos);
+        BlockState state = entity.getEntityWorld().getBlockState(pos);
 
         if (state.getBlock() instanceof SpiderWebBlock spiderWebBlock) {
             SpiderWebBlock.WebType webType = state.get(SpiderWebBlock.WEB_TYPE);

@@ -56,7 +56,7 @@ public class SpiderEggBlock extends Block {
 
     @Override
     public void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify) {
-        if (!world.isClient) {
+        if (!world.isClient()) {
             boolean shouldPrevent = shouldStartPrevented(world, pos);
 
             if (shouldPrevent && !state.get(PREVENTED)) {
@@ -71,7 +71,7 @@ public class SpiderEggBlock extends Block {
     }
 
     private boolean shouldStartPrevented(World world, BlockPos pos) {
-        if (world.isClient) return false;
+        if (world.isClient()) return false;
 
         return world.getPlayers().stream()
                 .filter(player -> player.squaredDistanceTo(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) <= PLAYER_RANGE * PLAYER_RANGE)
@@ -189,7 +189,7 @@ public class SpiderEggBlock extends Block {
 
     @Override
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-        if (!world.isClient && !state.get(PREVENTED) && !world.getBlockTickScheduler().isQueued(pos, this)) {
+        if (!world.isClient() && !state.get(PREVENTED) && !world.getBlockTickScheduler().isQueued(pos, this)) {
             world.scheduleBlockTick(pos, this, PLAYER_CHECK_INTERVAL);
         }
     }
@@ -211,7 +211,7 @@ public class SpiderEggBlock extends Block {
     @Override
     protected ActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (stack.getItem() instanceof FlintAndSteelItem && !state.get(PREVENTED)) {
-            if (!world.isClient) {
+            if (!world.isClient()) {
                 world.setBlockState(pos, state.with(PREVENTED, true), Block.NOTIFY_ALL);
                 world.playSound(null, pos, SoundEvents.ENTITY_SPIDER_DEATH, SoundCategory.BLOCKS, 1.0F, 1.0F);
 

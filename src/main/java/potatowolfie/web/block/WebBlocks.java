@@ -24,8 +24,9 @@ public class WebBlocks {
                     .mapColor(MapColor.YELLOW)
                     .instrument(NoteBlockInstrument.XYLOPHONE)
                     .sounds(BlockSoundGroup.HONEY)
-                    .strength(0.5f)
+                    .strength(0.5f, 0.5f)
                     .hardness(0.5f)
+                    .luminance(state -> 3)
             ));
 
     public static final Block SPIDER_EGG_SHELLS = registerBlock("spider_egg_shells",
@@ -34,12 +35,13 @@ public class WebBlocks {
                     .mapColor(MapColor.YELLOW)
                     .instrument(NoteBlockInstrument.XYLOPHONE)
                     .sounds(BlockSoundGroup.HONEY)
-                    .strength(0.0f)
+                    .strength(0.0f, 0.0f)
                     .hardness(0.0f)
                     .breakInstantly()
                     .nonOpaque()
                     .noCollision()
                     .pistonBehavior(PistonBehavior.DESTROY)
+                    .luminance(state -> 3)
             ));
 
     public static final Block SPIDER_MOSS = registerBlock("spider_moss",
@@ -47,7 +49,7 @@ public class WebBlocks {
                     .registryKey(RegistryKey.of(Registries.BLOCK.getKey(), Identifier.of(Web.MOD_ID, "spider_moss")))
                     .mapColor(MapColor.DARK_AQUA)
                     .sounds(BlockSoundGroup.MOSS_BLOCK)
-                    .strength(0.1f)
+                    .strength(0.1f, 0.1f)
                     .hardness(0.1f)
                     .burnable()
             ));

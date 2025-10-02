@@ -126,8 +126,8 @@ public class WebShootingSpiderAttackGoal extends Goal {
     }
 
     private List<SpiderEntity> getNearbySpiders() {
-        Box searchBox = Box.of(this.spider.getPos(), 64, 32, 64);
-        return this.spider.getWorld().getEntitiesByClass(
+        Box searchBox = Box.of(this.spider.getEntityPos(), 64, 32, 64);
+        return this.spider.getEntityWorld().getEntitiesByClass(
                 SpiderEntity.class,
                 searchBox,
                 spider -> spider.isAlive() && spider != this.spider && spider.getTarget() != null
@@ -318,12 +318,12 @@ public class WebShootingSpiderAttackGoal extends Goal {
         if (distance <= 3.5) {
             if (attackCooldown <= 0) {
                 float damage = 4.0f;
-                boolean damageDealt = target.damage((ServerWorld) this.spider.getWorld(),
+                boolean damageDealt = target.damage((ServerWorld) this.spider.getEntityWorld(),
                         this.spider.getDamageSources().mobAttack(this.spider), damage);
 
                 if (damageDealt) {
-                    Vec3d targetPos = target.getPos();
-                    Vec3d spiderPos = this.spider.getPos();
+                    Vec3d targetPos = target.getEntityPos();
+                    Vec3d spiderPos = this.spider.getEntityPos();
                     Vec3d direction = targetPos.subtract(spiderPos).normalize();
 
                     double knockbackStrength = 0.5;
@@ -344,12 +344,12 @@ public class WebShootingSpiderAttackGoal extends Goal {
 
         if (distance <= 3.5 && attackCooldown <= 0) {
             float damage = 4.0f;
-            boolean damageDealt = target.damage((ServerWorld) this.spider.getWorld(),
+            boolean damageDealt = target.damage((ServerWorld) this.spider.getEntityWorld(),
                     this.spider.getDamageSources().mobAttack(this.spider), damage);
 
             if (damageDealt) {
-                Vec3d targetPos = target.getPos();
-                Vec3d spiderPos = this.spider.getPos();
+                Vec3d targetPos = target.getEntityPos();
+                Vec3d spiderPos = this.spider.getEntityPos();
                 Vec3d direction = targetPos.subtract(spiderPos).normalize();
 
                 double knockbackStrength = 0.4;
@@ -373,8 +373,8 @@ public class WebShootingSpiderAttackGoal extends Goal {
             return;
         }
 
-        Vec3d spiderPos = this.spider.getPos();
-        Vec3d targetPos = target.getPos();
+        Vec3d spiderPos = this.spider.getEntityPos();
+        Vec3d targetPos = target.getEntityPos();
         Vec3d awayDirection = spiderPos.subtract(targetPos).normalize();
         Vec3d retreatPos = spiderPos.add(awayDirection.multiply(8.0));
 
@@ -395,8 +395,8 @@ public class WebShootingSpiderAttackGoal extends Goal {
         }
 
         if (distance < 5.0) {
-            Vec3d spiderPos = this.spider.getPos();
-            Vec3d targetPos = target.getPos();
+            Vec3d spiderPos = this.spider.getEntityPos();
+            Vec3d targetPos = target.getEntityPos();
             Vec3d awayDirection = spiderPos.subtract(targetPos).normalize();
 
             Vec3d strafeDirection = new Vec3d(-awayDirection.z, 0, awayDirection.x);
@@ -409,8 +409,8 @@ public class WebShootingSpiderAttackGoal extends Goal {
 
             this.spider.getNavigation().startMovingTo(retreatPos.x, retreatPos.y, retreatPos.z, currentSpeed);
         } else if (distance >= 8.0) {
-            Vec3d spiderPos = this.spider.getPos();
-            Vec3d targetPos = target.getPos();
+            Vec3d spiderPos = this.spider.getEntityPos();
+            Vec3d targetPos = target.getEntityPos();
             Vec3d directionToTarget = targetPos.subtract(spiderPos).normalize();
 
             Vec3d strafeDirection = new Vec3d(-directionToTarget.z, 0, directionToTarget.x);
@@ -450,8 +450,8 @@ public class WebShootingSpiderAttackGoal extends Goal {
         }
 
         if (distance >= 5.0 && distance <= 15.0) {
-            Vec3d spiderPos = this.spider.getPos();
-            Vec3d targetPos = target.getPos();
+            Vec3d spiderPos = this.spider.getEntityPos();
+            Vec3d targetPos = target.getEntityPos();
             Vec3d directionToTarget = targetPos.subtract(spiderPos).normalize();
 
             double optimalRange = 8.0;
@@ -544,8 +544,8 @@ public class WebShootingSpiderAttackGoal extends Goal {
         if (distance <= attackRange) {
             this.spider.getNavigation().stop();
 
-            Vec3d targetPos = target.getPos();
-            Vec3d spiderPos = this.spider.getPos();
+            Vec3d targetPos = target.getEntityPos();
+            Vec3d spiderPos = this.spider.getEntityPos();
             Vec3d direction = targetPos.subtract(spiderPos).normalize();
 
             double yaw = Math.atan2(-direction.x, direction.z) * (180.0 / Math.PI);
@@ -555,7 +555,7 @@ public class WebShootingSpiderAttackGoal extends Goal {
 
             if (attackCooldown <= 0) {
                 float damage = 4.0f;
-                boolean damageDealt = target.damage((ServerWorld) this.spider.getWorld(),
+                boolean damageDealt = target.damage((ServerWorld) this.spider.getEntityWorld(),
                         this.spider.getDamageSources().mobAttack(this.spider), damage);
 
                 if (damageDealt) {

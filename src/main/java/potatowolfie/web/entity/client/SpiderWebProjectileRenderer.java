@@ -3,9 +3,13 @@ package potatowolfie.web.entity.client;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.ProjectileEntityRenderer;
+import net.minecraft.client.render.entity.model.ArrowEntityModel;
+import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.render.entity.state.ProjectileEntityRenderState;
+import net.minecraft.client.render.state.CameraRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.RotationAxis;
@@ -20,9 +24,6 @@ public class SpiderWebProjectileRenderer extends ProjectileEntityRenderer<Spider
 
     public SpiderWebProjectileRenderer(EntityRendererFactory.Context context) {
         super(context);
-        if (context == null) {
-            throw new IllegalArgumentException("EntityRendererFactory.Context cannot be null");
-        }
         this.model = new SpiderWebProjectileModel(context.getPart(WebEntityModelLayers.SPIDER_WEB_FLYING));
     }
 
@@ -40,30 +41,31 @@ public class SpiderWebProjectileRenderer extends ProjectileEntityRenderer<Spider
     }
 
     @Override
-    public void render(ProjectileEntityRenderState state, MatrixStack matrices,
-                       VertexConsumerProvider vertexConsumers, int light) {
-        if (state == null || matrices == null || vertexConsumers == null || model == null) {
-            return;
-        }
-
+    public void render(ProjectileEntityRenderState renderState, MatrixStack matrices, OrderedRenderCommandQueue queue, CameraRenderState cameraRenderState) {
         matrices.push();
 
-        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(state.yaw - 90.0F));
-        matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(state.pitch));
+        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(renderState.yaw - 90.0F));
+        matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(renderState.pitch));
 
         matrices.scale(1.0F, 1.0F, 1.0F);
         matrices.translate(-0.156F, -1.1875F, 0.0F);
 
-        int color = Colors.WHITE;
-        this.model.renderWithTexture(matrices,
-                vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(TEXTURE)),
-                light,
+        queue.submitModel(
+                this.model,
+                renderState,
+                matrices,
+                RenderLayer.getEntityCutoutNoCull(this.getTexture(renderState)),
+                renderState.light,
                 OverlayTexture.DEFAULT_UV,
-                color);
+                renderState.outlineColor,
+                null
+        );
 
+        super.render(renderState, matrices, queue, cameraRenderState);
         matrices.pop();
     }
 
+    @Override
     public Identifier getTexture(ProjectileEntityRenderState state) {
         return TEXTURE;
     }

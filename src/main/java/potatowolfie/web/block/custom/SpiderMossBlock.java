@@ -33,7 +33,7 @@ public class SpiderMossBlock extends Block implements Fertilizable {
     @Override
     public ActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (stack.isOf(Items.BONE_MEAL)) {
-            if (!world.isClient) {
+            if (!world.isClient()) {
                 if (this.isFertilizable(world, pos, state)) {
                     this.grow((ServerWorld) world, world.random, pos, state);
 

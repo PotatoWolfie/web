@@ -77,7 +77,7 @@ public class SpiderWebItem extends BlockItem {
     }
 
     private ActionResult throwSpiderWeb(World world, PlayerEntity player, Hand hand, ItemStack itemStack) {
-        if (!world.isClient) {
+        if (!world.isClient()) {
             SpiderWebProjectileEntity projectile = new SpiderWebProjectileEntity(world, player);
             projectile.setPosition(player.getEyePos());
             projectile.setVelocity(player, player.getPitch(), player.getYaw(), 0.0F, 1.5F, 1.0F);

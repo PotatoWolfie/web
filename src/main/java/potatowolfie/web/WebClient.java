@@ -19,6 +19,7 @@ public class WebClient implements ClientModInitializer {
 
         EntityModelLayerRegistry.registerModelLayer(WebEntityModelLayers.SPIDER_WEB, SpiderWebModel::getTexturedModelData);
         EntityRendererRegistry.register(WebEntities.SPIDER_WEB, SpiderWebRenderer::new);
+
         EntityModelLayerRegistry.registerModelLayer(WebEntityModelLayers.SPIDER_WEB_FLYING, SpiderWebProjectileModel::getTexturedModelData);
         EntityRendererRegistry.register(WebEntities.SPIDER_WEB_FLYING, SpiderWebProjectileRenderer::new);
 

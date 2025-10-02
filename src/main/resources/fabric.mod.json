@@ -2,7 +2,7 @@
 {
 	"schemaVersion": 1,
 	"id": "web",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"name": "Web",
 	"description": "Web is a mod that expands on spiders by giving them new behaviors and animations. Spiders can now shoot webs to trap players, and baby spiders will hatch from eggs found in Spider Egg Clusters underground. Their attacks and style are inspired by the way Minecraft Dungeons implemented spiders.",
 	"authors": [
@@ -32,8 +32,8 @@
 		"web.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.16.14",
-		"minecraft": ">=1.21.6 <=1.21.8",
+		"fabricloader": ">=0.17.2",
+		"minecraft": "1.21.9",
 		"java": ">=21",
 		"fabric-api": "*"
 	},

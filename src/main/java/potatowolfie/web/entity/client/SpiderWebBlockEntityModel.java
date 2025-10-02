@@ -1,15 +1,15 @@
 package potatowolfie.web.entity.client;
 
 import net.minecraft.client.model.*;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 
-public class SpiderWebBlockEntityModel extends EntityModel<SpiderWebRenderState> {
+public class SpiderWebBlockEntityModel {
 	private final ModelPart web;
 
 	public SpiderWebBlockEntityModel(ModelPart modelPart) {
-		super(modelPart);
 		this.web = modelPart.getChild("web");
 	}
 
@@ -23,17 +23,11 @@ public class SpiderWebBlockEntityModel extends EntityModel<SpiderWebRenderState>
 		return TexturedModelData.of(modelData, 128, 128);
 	}
 
-	@Override
-	public void setAngles(SpiderWebRenderState spiderWebRenderState) {
-		super.setAngles(spiderWebRenderState);
-	}
-
 	public ModelPart getWeb() {
 		return this.web;
 	}
 
-	public void renderForBlockEntity(MatrixStack matrices, VertexConsumer vertexConsumer, int light, int overlay,
-									 float red, float green, float blue, float alpha) {
+	public void render(MatrixStack matrices, VertexConsumer vertexConsumer, int light, int overlay) {
 		web.render(matrices, vertexConsumer, light, overlay);
 	}
 }

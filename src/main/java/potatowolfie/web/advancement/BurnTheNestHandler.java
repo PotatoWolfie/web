@@ -9,7 +9,7 @@ import net.minecraft.util.Identifier;
 public class BurnTheNestHandler {
 
     public static void grantBurnTheNestAdvancement(ServerPlayerEntity player) {
-        MinecraftServer server = player.getServer();
+        MinecraftServer server = player.getEntityWorld().getServer();
         if (server == null) return;
 
         Identifier advId = Identifier.of("web", "burn_spider_egg");
