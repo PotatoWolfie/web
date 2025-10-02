@@ -18,5 +18,7 @@
   "advancement.web.burn_the_nest.description": "Burn a spider egg using a flint and steel",
 
   "painting.web.spider_web.author": "PotatoWolfie",
-  "painting.web.spider_web.title": "Spider Web"
+  "painting.web.spider_web.title": "Spider Web",
+
+  "modmenu.descriptionTranslation.web": "Web is a mod that expands on spiders by giving them new behaviors and animations. Spiders can now shoot webs to trap players, and baby spiders will hatch from eggs found in Spider Egg Clusters underground. Their attacks and style are inspired by the way Minecraft Dungeons implemented spiders."
 }
