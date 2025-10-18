@@ -40,6 +40,8 @@ public class SpiderEggBlock extends Block {
     private static final int MAX_PROTECTOR_SPIDERS = 2;
     private static final double PROTECTOR_SPAWN_RANGE = 8.0;
     private static final double PROTECTOR_CHECK_RANGE = 16.0;
+    private static final float SPIDER_WIDTH = 1.4F;
+    private static final float SPIDER_HEIGHT = 0.5F;
 
     public SpiderEggBlock(Settings settings) {
         super(settings);
@@ -169,15 +171,10 @@ public class SpiderEggBlock extends Block {
             int x = center.getX() + (int)(Math.cos(angle) * distance);
             int z = center.getZ() + (int)(Math.sin(angle) * distance);
 
-            BlockPos testPos = new BlockPos(x, center.getY(), z);
             for (int y = center.getY() + 3; y >= center.getY() - 3; y--) {
                 BlockPos candidatePos = new BlockPos(x, y, z);
-                BlockPos groundPos = candidatePos.down();
 
-                if (world.getBlockState(groundPos).isSolidBlock(world, groundPos) &&
-                        world.getBlockState(candidatePos).isAir() &&
-                        world.getBlockState(candidatePos.up()).isAir()) {
-
+                if (hasEnoughSpaceForSpider(world, candidatePos)) {
                     if (SpawnRestriction.canSpawn(EntityType.SPIDER, world, SpawnReason.NATURAL, candidatePos, random)) {
                         return candidatePos;
                     }
@@ -185,6 +182,33 @@ public class SpiderEggBlock extends Block {
             }
         }
         return null;
+    }
+
+    private boolean hasEnoughSpaceForSpider(ServerWorld world, BlockPos pos) {
+        BlockPos groundPos = pos.down();
+
+        if (!world.getBlockState(groundPos).isSolidBlock(world, groundPos)) {
+            return false;
+        }
+
+        if (!world.getBlockState(pos).isAir() || !world.getBlockState(pos.up()).isAir()) {
+            return false;
+        }
+
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dz = -1; dz <= 1; dz++) {
+                if (dx == 0 && dz == 0) continue;
+
+                BlockPos adjacentPos = pos.add(dx, 0, dz);
+                BlockState adjacentState = world.getBlockState(adjacentPos);
+
+                if (!adjacentState.isAir() && adjacentState.isSolidBlock(world, adjacentPos)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     @Override
