@@ -1,5 +1,7 @@
+![Vines](https://i.imgur.com/jeKchYu.png)
 # ![Just about everything in the mod, in one image.](https://i.imgur.com/O5rEFGZ.png)
 **Web** is a mod that expands on spiders by giving them new behaviors and animations. Spiders can now shoot webs to trap players, and baby spiders will hatch from eggs found in Spider Egg Clusters underground. Their attacks and style are inspired by the way _Minecraft Dungeons_ implemented spiders.
+![Bottom Vines](https://i.imgur.com/ym0LRTK.png)
 
 # ![Spider Idle](https://cdn.modrinth.com/data/cached_images/78abcd2be380f7755dd1617b6cd0b572838bab95.gif) Spider
 The **Spider** was completely overhauled with new animations and behavior changes. First, animations. An Idle, walking, and shooting animation. "Walking" animation is a bit of an overstatement, for the leg animations were unchanged, but the rest of the body does have movement. Second, shooting. Spiders can now shoot webs at players, or any targets it may have. When you are in a web, you are completely stuck for 2 seconds, before getting released. In those two seconds, spiders all sprint at you and attempt to kill you.
@@ -22,3 +24,6 @@ As of now, the only changes that were made to the **Cave Spider** are the animat
 | More Spider Eye Usages |❌|
 | More Fermented Spider Eye Usages |❌|
 | Cave Spider Rework |❌|
+
+# Backports
+I have been requested that I make backports for many versions, and I have a rule for these. I may or may not make the backport you request, but once I make that backport, there is a good chance that I won't update this backport whenever I add new content. I hope you understand why I say this. Thanks!
