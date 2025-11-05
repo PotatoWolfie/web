@@ -59,19 +59,20 @@ public class SpiderEggBlock extends Block {
     @Override
     public void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify) {
         if (!world.isClient()) {
-            boolean shouldPrevent = shouldStartPrevented(world, pos);
+            if (oldState.isAir() || oldState.getBlock() != this) {
+                boolean shouldPrevent = shouldStartPrevented(world, pos);
 
-            if (shouldPrevent && !state.get(PREVENTED)) {
-                world.setBlockState(pos, state.with(PREVENTED, true), Block.NOTIFY_ALL);
-                state = world.getBlockState(pos);
-            }
+                if (shouldPrevent && !state.get(PREVENTED)) {
+                    world.setBlockState(pos, state.with(PREVENTED, true), Block.NOTIFY_ALL);
+                    state = world.getBlockState(pos);
+                }
 
-            if (!state.get(PREVENTED)) {
-                world.scheduleBlockTick(pos, this, PLAYER_CHECK_INTERVAL);
+                if (!state.get(PREVENTED)) {
+                    world.scheduleBlockTick(pos, this, PLAYER_CHECK_INTERVAL);
+                }
             }
         }
     }
-
     private boolean shouldStartPrevented(World world, BlockPos pos) {
         if (world.isClient()) return false;
 
