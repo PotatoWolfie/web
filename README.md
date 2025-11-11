@@ -24,6 +24,3 @@ As of now, the only changes that were made to the **Cave Spider** are the animat
 | More Spider Eye Usages |❌|
 | More Fermented Spider Eye Usages |❌|
 | Cave Spider Rework |❌|
-
-# Backports
-I have been requested that I make backports for many versions, and I have a rule for these. I may or may not make the backport you request, but once I make that backport, there is a good chance that I won't update this backport whenever I add new content. I hope you understand why I say this. Thanks!
