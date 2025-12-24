@@ -1,0 +1,24 @@
+{
+  "item.web.spider_egg": "クモの卵",
+  "item.web.spider_egg_shells": "クモの卵の殻",
+  "item.web.spider_moss": "スパイダーモス",
+  "item.web.spider_web_block": "クモの巣",
+  "item.web.spider_grass": "スパイダーグラス",
+
+  "block.web.spider_web": "クモの巣",
+
+  "entity.web.spider_web": "クモの巣",
+  "entity.web.spider_web_flying": "空飛ぶクモの巣",
+  "entity.web.baby_spider": "ベビースパイダー",
+
+  "web.subtitles.web.throw": "ウェブスピット",
+  "web.subtitles.web.land": "ウェブランド",
+
+  "advancement.web.burn_the_nest.title": "巣を燃やす",
+  "advancement.web.burn_the_nest.description": "火打ち石と火打ち金を使ってクモの卵を燃やす。",
+
+  "painting.web.spider_web.author": "PotatoWolfie",
+  "painting.web.spider_web.title": "クモの巣",
+
+  "modmenu.descriptionTranslation.web": "Webは、クモに新たな行動やアニメーションを追加することで、クモの要素を拡張するMODです。クモは糸を吐いてプレイヤーを捕らえることができ、地下にあるクモの卵の塊からは子グモが孵化します。これらの攻撃方法や動きは、Minecraft Dungeonsにおけるクモの描写にインスパイアされています。"
+}
