@@ -1,0 +1,24 @@
+{
+  "required": true,
+  "package": "potatowolfie.web.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "CaveSpiderAnimationMixin",
+    "ItemEntityMixin",
+    "LivingEntityMixin",
+    "SpawnEggItemMixin",
+    "SpiderEntityMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  },
+  "client": [
+    "CaveSpiderModelMixin",
+    "CaveSpiderRendererMixin",
+    "SpiderModelMixin",
+    "SpiderRendererMixin"
+  ]
+}

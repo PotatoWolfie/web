@@ -1,0 +1,20 @@
+Limited All Rights Reserved
+Copyright © 2025 PotatoWolfie
+
+All rights reserved.
+
+Permission is granted for the following:
+1. You may reference and learn from portions of this code or assets for personal or educational purposes.
+2. You may use small code snippets in your own projects, provided they are properly adapted and are not direct copies of substantial portions of this project.
+3. You may include this mod in public or private modpacks, under the following conditions:
+   - The mod must not be modified.
+   - The mod must not be reuploaded or redistributed outside of the official distribution pages (e.g., Modrinth/CurseForge).
+   - Proper credit ("PotatoWolfie") must be given.
+   - A link to the official download page must be included in the modpack description or documentation.
+
+The following actions are not permitted:
+1. Redistributing this project or significant parts of it in original or modified form outside of the permissions stated above.
+2. Reuploading or rehosting the complete mod or its assets without explicit permission.
+3. Claiming this work as your own.
+
+For permissions beyond these terms, contact: potatoindustries64@gmail.com

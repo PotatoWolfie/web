@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "web:block/spider_egg_bottom",
+    "east": "web:block/spider_egg_side",
+    "north": "web:block/spider_egg_side",
+    "particle": "web:block/spider_egg_shells_1",
+    "south": "web:block/spider_egg_side",
+    "up": "web:block/spider_egg_top",
+    "west": "web:block/spider_egg_side"
+  }
+}

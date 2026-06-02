@@ -1,0 +1,76 @@
+{
+  "multipart": [
+    {
+      "when": { "down": "true", "texture_variant": "false", "initialized": "true" },
+      "apply": { "model": "web:block/spider_egg_shells_1_down" }
+    },
+    {
+      "when": { "down": "true", "texture_variant": "true", "initialized": "true" },
+      "apply": { "model": "web:block/spider_egg_shells_2_down" }
+    },
+    {
+      "when": { "down": "true", "initialized": "false" },
+      "apply": { "model": "web:block/spider_egg_shells_invisible_down" }
+    },
+    {
+      "when": { "up": "true", "texture_variant": "false", "initialized": "true" },
+      "apply": { "model": "web:block/spider_egg_shells_1_up" }
+    },
+    {
+      "when": { "up": "true", "texture_variant": "true", "initialized": "true" },
+      "apply": { "model": "web:block/spider_egg_shells_2_up" }
+    },
+    {
+      "when": { "up": "true", "initialized": "false" },
+      "apply": { "model": "web:block/spider_egg_shells_invisible_up" }
+    },
+    {
+      "when": { "north": "true", "texture_variant": "false", "initialized": "true" },
+      "apply": { "model": "web:block/spider_egg_shells_1_north" }
+    },
+    {
+      "when": { "north": "true", "texture_variant": "true", "initialized": "true" },
+      "apply": { "model": "web:block/spider_egg_shells_2_north" }
+    },
+    {
+      "when": { "north": "true", "initialized": "false" },
+      "apply": { "model": "web:block/spider_egg_shells_invisible_north" }
+    },
+    {
+      "when": { "south": "true", "texture_variant": "false", "initialized": "true" },
+      "apply": { "model": "web:block/spider_egg_shells_1_south" }
+    },
+    {
+      "when": { "south": "true", "texture_variant": "true", "initialized": "true" },
+      "apply": { "model": "web:block/spider_egg_shells_2_south" }
+    },
+    {
+      "when": { "south": "true", "initialized": "false" },
+      "apply": { "model": "web:block/spider_egg_shells_invisible_south" }
+    },
+    {
+      "when": { "east": "true", "texture_variant": "false", "initialized": "true" },
+      "apply": { "model": "web:block/spider_egg_shells_1_east" }
+    },
+    {
+      "when": { "east": "true", "texture_variant": "true", "initialized": "true" },
+      "apply": { "model": "web:block/spider_egg_shells_2_east" }
+    },
+    {
+      "when": { "east": "true", "initialized": "false" },
+      "apply": { "model": "web:block/spider_egg_shells_invisible_east" }
+    },
+    {
+      "when": { "west": "true", "texture_variant": "false", "initialized": "true" },
+      "apply": { "model": "web:block/spider_egg_shells_1_west" }
+    },
+    {
+      "when": { "west": "true", "texture_variant": "true", "initialized": "true" },
+      "apply": { "model": "web:block/spider_egg_shells_2_west" }
+    },
+    {
+      "when": { "west": "true", "initialized": "false" },
+      "apply": { "model": "web:block/spider_egg_shells_invisible_west" }
+    }
+  ]
+}

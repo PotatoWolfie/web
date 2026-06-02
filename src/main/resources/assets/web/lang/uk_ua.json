@@ -1,0 +1,24 @@
+{
+  "item.web.spider_egg": "Яйце павука",
+  "item.web.spider_egg_shells": "Шкарлупа яйця павука",
+  "item.web.spider_moss": "Павучий мох",
+  "item.web.spider_web_block": "Павуче павутиння",
+  "item.web.spider_grass": "Павуча трава",
+
+  "block.web.spider_web": "Павуче павутиння",
+
+  "entity.web.spider_web": "Павуче павутиння",
+  "entity.web.spider_web_flying": "Летюче павуче павутиння",
+  "entity.web.baby_spider": "Дитинча-павук",
+
+  "web.subtitles.web.throw": "Павутиння запущено",
+  "web.subtitles.web.land": "Павутиння приземляється",
+
+  "advancement.web.burn_the_nest.title": "Спалене гніздо",
+  "advancement.web.burn_the_nest.description": "Запаліть павуче яйце за допомогою кресала",
+
+  "painting.web.spider_web.author": "PotatoWolfie",
+  "painting.web.spider_web.title": "Павуче павутиння",
+  
+  "modmenu.descriptionTranslation.web": "Web — це мод, який розширює можливості павуків, надаючи їм нову поведінку та анімацію. Павуки тепер можуть стріляти павутиною, щоб захопити гравців, а дитинчата-павуки вилуплюються з яєць, знайдених у підземних скупченнях павучих яєць. Їх атаки та стиль навіяні тим, як у Minecraft Dungeons реалізовано павуків"
+}
