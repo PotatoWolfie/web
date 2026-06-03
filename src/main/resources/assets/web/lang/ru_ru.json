@@ -1,0 +1,24 @@
+{
+  "item.web.spider_egg": "Паучье яйцо",
+  "item.web.spider_egg_shells": "Оболочка паучьего яйца",
+  "item.web.spider_moss": "Паучий мох",
+  "item.web.spider_web_block": "Паучья сеть",
+  "item.web.spider_grass": "Паучья трава",
+
+  "block.web.spider_web": "Паучья сеть",
+
+  "entity.web.spider_web": "Паучья сеть",
+  "entity.web.spider_web_flying": "Летящая паучья сеть",
+  "entity.web.baby_spider": "Паучонок",
+
+  "web.subtitles.web.throw": "Плевок паутиной",
+  "web.subtitles.web.land": "Паутина приземляется",
+
+  "advancement.web.burn_the_nest.title": "Гори, гори ясно",
+  "advancement.web.burn_the_nest.description": "Пожожгите паучье гнездо при помощи огнива",
+
+  "painting.web.spider_web.author": "PotatoWolfie",
+  "painting.web.spider_web.title": "Паучья сеть",
+
+  "modmenu.descriptionTranslation.web": ""
+}

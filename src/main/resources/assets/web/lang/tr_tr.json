@@ -1,0 +1,24 @@
+{
+  "item.web.spider_egg": "Örümcek Yumurtası",
+  "item.web.spider_egg_shells": "Örümcek Yumurta Kabukları",
+  "item.web.spider_moss": "Örümcek Yosunu",
+  "item.web.spider_web_block": "Örümcek ağı",
+  "item.web.spider_grass": "Örümcek Otu",
+
+  "block.web.spider_web": "Örümcek ağı",
+
+  "entity.web.spider_web": "Örümcek ağı",
+  "entity.web.spider_web_flying": "Uçan Örümcek Ağı",
+  "entity.web.baby_spider": "Bebek Örümcek",
+
+  "web.subtitles.web.throw": "Ağ tükürüğü",
+  "web.subtitles.web.land": "Web Diyarları",
+
+  "advancement.web.burn_the_nest.title": "Yuvasını Yak",
+  "advancement.web.burn_the_nest.description": "Çakmak taşı ve çelik kullanarak bir örümcek yumurtasını yak.",
+
+  "painting.web.spider_web.author": "PotatoWolfie",
+  "painting.web.spider_web.title": "Örümcek ağı",
+
+  "modmenu.descriptionTranslation.web": "Web, örümceklere yeni davranışlar ve animasyonlar kazandırarak onları geliştiren bir moddur. Artık örümcekler, oyuncuları tuzağa düşürmek için ağ fırlatabilmekte; yer altında bulunan Örümcek Yumurta Kümelerindeki yumurtalardan ise yavru örümcekler çıkmaktadır. Örümceklerin saldırıları ve tarzı, Minecraft Dungeons oyunundaki örümceklerin işleniş biçiminden ilham almıştır."
+}

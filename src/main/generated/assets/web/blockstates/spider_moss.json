@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "web:block/spider_moss"
+      },
+      {
+        "model": "web:block/spider_moss",
+        "y": 90
+      },
+      {
+        "model": "web:block/spider_moss",
+        "y": 180
+      },
+      {
+        "model": "web:block/spider_moss",
+        "y": 270
+      }
+    ]
+  }
+}

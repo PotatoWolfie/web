@@ -1,0 +1,31 @@
+{
+  "feature": "web:spider_egg_cluster",
+  "placement": [
+    {
+      "type": "minecraft:count",
+      "count": 2
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "type": "minecraft:rarity_filter",
+      "chance": 32
+    },
+    {
+      "type": "minecraft:height_range",
+      "height": {
+        "type": "minecraft:uniform",
+        "max_inclusive": {
+          "absolute": 55
+        },
+        "min_inclusive": {
+          "absolute": -64
+        }
+      }
+    },
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

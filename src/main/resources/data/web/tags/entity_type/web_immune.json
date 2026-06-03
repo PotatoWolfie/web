@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "web:baby_spider",
+    "minecraft:spider",
+    "minecraft:cave_spider"
+  ]
+}
