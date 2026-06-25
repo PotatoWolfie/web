@@ -27,6 +27,8 @@ public class WebRecipeGenerator extends FabricRecipeProvider {
                         .define('X', Blocks.COBWEB)
                         .unlockedBy(getHasName(Blocks.COBWEB), has(Blocks.COBWEB))
                         .save(recipeExporter);
+
+                carpet(WebBlocks.SPIDER_MOSS_CARPET, WebBlocks.SPIDER_MOSS);
             }
         };
     }

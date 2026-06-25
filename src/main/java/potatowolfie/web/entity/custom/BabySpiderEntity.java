@@ -14,12 +14,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.AnimationState;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
@@ -279,7 +274,7 @@ public class BabySpiderEntity extends Monster {
         if (this.level().isClientSide()) return;
 
         try {
-            Spider adultSpider = EntityType.SPIDER.create(this.level(), EntitySpawnReason.CONVERSION);
+            Spider adultSpider = EntityTypes.SPIDER.create(this.level(), EntitySpawnReason.CONVERSION);
             if (adultSpider != null) {
                 adultSpider.snapTo(
                         this.getX(), this.getY(), this.getZ(),
@@ -386,7 +381,7 @@ public class BabySpiderEntity extends Monster {
 
         RandomSource spawnRandom = world.getRandom();
         if (spawnRandom.nextInt(100) == 0) {
-            Skeleton skeletonEntity = EntityType.SKELETON.create(this.level(), EntitySpawnReason.JOCKEY);
+            Skeleton skeletonEntity = EntityTypes.SKELETON.create(this.level(), EntitySpawnReason.JOCKEY);
             if (skeletonEntity != null) {
                 skeletonEntity.snapTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
                 skeletonEntity.finalizeSpawn(world, difficulty, spawnReason, null);

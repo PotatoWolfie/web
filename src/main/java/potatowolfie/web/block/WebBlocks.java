@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.CarpetBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
@@ -56,6 +57,13 @@ public class WebBlocks {
                     .ignitedByLava()
             ));
 
+    public static final Block SPIDER_MOSS_CARPET = registerBlock("spider_moss_carpet",
+            new CarpetBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.MOSS_CARPET)
+                    .setId(ResourceKey.create(BuiltInRegistries.BLOCK.key(), Identifier.fromNamespaceAndPath(Web.MOD_ID, "spider_moss_carpet")))
+                    .mapColor(MapColor.WARPED_STEM)
+                    .ignitedByLava()
+            ));
+
     public static final Block SPIDER_GRASS = registerBlock("spider_grass",
             new SpiderGrassBlock(BlockBehaviour.Properties.of()
                     .setId(ResourceKey.create(BuiltInRegistries.BLOCK.key(), Identifier.fromNamespaceAndPath(Web.MOD_ID, "spider_grass")))
@@ -101,6 +109,7 @@ public class WebBlocks {
 
                     output.insertAfter(Items.PALE_HANGING_MOSS, List.of(
                             new ItemStack(SPIDER_MOSS),
+                            new ItemStack(SPIDER_MOSS_CARPET),
                             new ItemStack(SPIDER_GRASS)
                     ), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
                 });

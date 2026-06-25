@@ -13,8 +13,5 @@ public class WebItemTagProvider extends FabricTagsProvider.ItemTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider wrapperLookup) {
-        valueLookupBuilder(ItemTags.TRIM_MATERIALS)
-                .add();
-
     }
 }

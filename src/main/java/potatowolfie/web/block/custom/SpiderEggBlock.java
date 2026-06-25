@@ -10,6 +10,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.monster.spider.Spider;
 import net.minecraft.world.entity.player.Player;
@@ -24,6 +25,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import potatowolfie.web.advancement.BurnTheNestHandler;
 import potatowolfie.web.entity.WebEntities;
 import potatowolfie.web.entity.custom.BabySpiderEntity;
@@ -124,8 +126,9 @@ public class SpiderEggBlock extends Block {
     }
 
     private boolean spawnProtectorSpiders(ServerLevel world, BlockPos eggPos, RandomSource random) {
+        Vec3 center = Vec3.atCenterOf(eggPos);
         AABB searchBox = AABB.ofSize(
-                eggPos.getCenter(),
+                center,
                 PROTECTOR_CHECK_RANGE * 2,
                 PROTECTOR_CHECK_RANGE * 2,
                 PROTECTOR_CHECK_RANGE * 2
@@ -143,7 +146,7 @@ public class SpiderEggBlock extends Block {
         for (int i = 0; i < spidersToSpawn; i++) {
             BlockPos spawnPos = findValidSpawnPos(world, eggPos, random);
             if (spawnPos != null) {
-                Spider protectorSpider = new Spider(EntityType.SPIDER, world);
+                Spider protectorSpider = new Spider(EntityTypes.SPIDER, world);
                 protectorSpider.snapTo(
                         spawnPos.getX() + 0.5,
                         spawnPos.getY(),
@@ -176,7 +179,7 @@ public class SpiderEggBlock extends Block {
                 BlockPos candidatePos = new BlockPos(x, y, z);
 
                 if (hasEnoughSpaceForSpider(world, candidatePos)) {
-                    if (SpawnPlacements.checkSpawnRules(EntityType.SPIDER, world, EntitySpawnReason.NATURAL, candidatePos, random)) {
+                    if (SpawnPlacements.checkSpawnRules(EntityTypes.SPIDER, world, EntitySpawnReason.NATURAL, candidatePos, random)) {
                         return candidatePos;
                     }
                 }

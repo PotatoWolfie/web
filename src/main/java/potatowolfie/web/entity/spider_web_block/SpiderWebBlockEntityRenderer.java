@@ -55,8 +55,6 @@ public class SpiderWebBlockEntityRenderer implements BlockEntityRenderer<SpiderW
                 state.lightCoords,
                 OverlayTexture.NO_OVERLAY,
                 null,
-                false,
-                false,
                 -1,
                 state.breakProgress,
                 0

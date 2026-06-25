@@ -1,5 +1,6 @@
 package potatowolfie.web.goals;
 
+import net.minecraft.world.damagesource.DamageSource;
 import potatowolfie.web.Web;
 import potatowolfie.web.entity.custom.SpiderWebEntity;
 import potatowolfie.web.interfaces.WebSpiderInterface;
@@ -336,16 +337,24 @@ public class WebShootingSpiderAttackGoal extends Goal {
         if (distance <= 3.5) {
             if (attackCooldown <= 0) {
                 float damage = 4.0f;
-                boolean damageDealt = target.hurtServer((ServerLevel) this.spider.level(),
-                        this.spider.damageSources().mobAttack(this.spider), damage);
+
+                DamageSource source = this.spider.damageSources().mobAttack(this.spider);
+
+                boolean damageDealt = target.hurtServer(
+                        (ServerLevel) this.spider.level(),
+                        source,
+                        damage
+                );
 
                 if (damageDealt) {
                     Vec3 targetPos = target.position();
                     Vec3 spiderPos = this.spider.position();
+
                     Vec3 direction = targetPos.subtract(spiderPos).normalize();
 
                     double knockbackStrength = 0.5;
-                    target.knockback(knockbackStrength, -direction.x, -direction.z);
+
+                    target.knockback(knockbackStrength, -direction.x, -direction.z, source, damage);
 
                     this.spider.playSound(net.minecraft.sounds.SoundEvents.SPIDER_HURT, 1.0f, 1.2f);
                     attackCooldown = 15;
@@ -362,8 +371,10 @@ public class WebShootingSpiderAttackGoal extends Goal {
 
         if (distance <= 3.5 && attackCooldown <= 0) {
             float damage = 4.0f;
+            DamageSource source = this.spider.damageSources().mobAttack(this.spider);
+
             boolean damageDealt = target.hurtServer((ServerLevel) this.spider.level(),
-                    this.spider.damageSources().mobAttack(this.spider), damage);
+                    source, damage);
 
             if (damageDealt) {
                 Vec3 targetPos = target.position();
@@ -371,7 +382,7 @@ public class WebShootingSpiderAttackGoal extends Goal {
                 Vec3 direction = targetPos.subtract(spiderPos).normalize();
 
                 double knockbackStrength = 0.4;
-                target.knockback(knockbackStrength, -direction.x, -direction.z);
+                target.knockback(knockbackStrength, -direction.x, -direction.z, source, damage);
 
                 this.spider.playSound(net.minecraft.sounds.SoundEvents.SPIDER_HURT, 1.0f, 1.2f);
                 attackCooldown = 12;
@@ -573,12 +584,14 @@ public class WebShootingSpiderAttackGoal extends Goal {
 
             if (attackCooldown <= 0) {
                 float damage = 4.0f;
+                DamageSource source = this.spider.damageSources().mobAttack(this.spider);
+
                 boolean damageDealt = target.hurtServer((ServerLevel) this.spider.level(),
-                        this.spider.damageSources().mobAttack(this.spider), damage);
+                        source, damage);
 
                 if (damageDealt) {
                     double knockbackStrength = targetIsTouchingWeb ? 0.6 : 0.4;
-                    target.knockback(knockbackStrength, -direction.x, -direction.z);
+                    target.knockback(knockbackStrength, -direction.x, -direction.z, source, damage);
 
                     this.spider.playSound(net.minecraft.sounds.SoundEvents.SPIDER_HURT, 1.0f, 1.2f);
 

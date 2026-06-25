@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.model.TexturedModel;
+import net.minecraft.world.level.block.Blocks;
 import potatowolfie.web.block.WebBlocks;
 
 public class WebModelProvider extends FabricModelProvider {
@@ -14,7 +15,7 @@ public class WebModelProvider extends FabricModelProvider {
 
     @Override
     public void generateBlockStateModels(BlockModelGenerators blockStateModelGenerator) {
-        blockStateModelGenerator.createColoredBlockWithRandomRotations(TexturedModel.CUBE, WebBlocks.SPIDER_MOSS);
+        blockStateModelGenerator.createFullAndCarpetBlocks(WebBlocks.SPIDER_MOSS, WebBlocks.SPIDER_MOSS_CARPET);
     }
 
     @Override
