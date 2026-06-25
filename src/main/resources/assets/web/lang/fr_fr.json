@@ -1,0 +1,24 @@
+{
+  "item.web.spider_egg": "Œuf d'araignée",
+  "item.web.spider_egg_shells": "Coques d'œufs d'araignée",
+  "item.web.spider_moss": "Mousse-araignée",
+  "item.web.spider_web_block": "Toile d'araignée",
+  "item.web.spider_grass": "Herbe-araignée",
+
+  "block.web.spider_web": "Toile d'araignée",
+
+  "entity.web.spider_web": "Toile d'araignée",
+  "entity.web.spider_web_flying": "Toile d'araignée volante",
+  "entity.web.baby_spider": "Jeune araignée",
+
+  "web.subtitles.web.throw": "Crachat de toile",
+  "web.subtitles.web.land": "Page d'atterrissage",
+
+  "advancement.web.burn_the_nest.title": "Brûle le nid",
+  "advancement.web.burn_the_nest.description": "Brûlez un œuf d'araignée à l'aide d'un silex et d'un acier.",
+
+  "painting.web.spider_web.author": "PotatoWolfie",
+  "painting.web.spider_web.title": "Toile d'araignée",
+
+  "modmenu.descriptionTranslation.web": "Web est un mod qui enrichit les araignées en leur conférant de nouveaux comportements et animations. Les araignées peuvent désormais projeter des toiles pour piéger les joueurs, et des araignées juvéniles éclosent à partir d'œufs trouvés dans des amas d'œufs d'araignée situés sous terre. Leurs attaques et leur style s'inspirent de la manière dont les araignées ont été implémentées dans Minecraft Dungeons."
+}
