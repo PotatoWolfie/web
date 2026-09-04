@@ -15,6 +15,8 @@ import net.minecraft.world.entity.monster.spider.Spider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.FlintAndSteelItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.ShearsItem;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -31,6 +33,7 @@ import potatowolfie.web.entity.custom.BabySpiderEntity;
 public class SpiderEggBlock extends Block {
     public static final BooleanProperty PREVENTED = BooleanProperty.create("prevented");
     public static final BooleanProperty SPAWNED_PROTECTORS = BooleanProperty.create("spawned_protectors");
+    public static final BooleanProperty SHEARED = BooleanProperty.create("sheared");
     public static final IntegerProperty REMAINING_TIME = IntegerProperty.create("remaining_time", 0, 288);
     private static final int HATCH_TIME = 24000;
     private static final int MIN_SCALED_HATCH_TIME = 216;
@@ -48,12 +51,13 @@ public class SpiderEggBlock extends Block {
         this.registerDefaultState(this.stateDefinition.any()
                 .setValue(PREVENTED, false)
                 .setValue(SPAWNED_PROTECTORS, false)
+                .setValue(SHEARED, false)
                 .setValue(REMAINING_TIME, MAX_SCALED_HATCH_TIME));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(PREVENTED, REMAINING_TIME, SPAWNED_PROTECTORS);
+        builder.add(PREVENTED, REMAINING_TIME, SPAWNED_PROTECTORS, SHEARED);
     }
 
     @Override
@@ -235,6 +239,27 @@ public class SpiderEggBlock extends Block {
 
     @Override
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        
+        // Handle shearing the egg block for spider eyes
+        if (stack.getItem() instanceof ShearsItem && !state.getValue(SHEARED)) {
+            if (!world.isClientSide()) {
+                world.setBlock(pos, state.setValue(SHEARED, true), Block.UPDATE_ALL);
+                world.playSound(null, pos, SoundEvents.SHEEP_SHEAR, SoundSource.BLOCKS, 1.0F, 1.0F);
+
+                // Drops 1-2 Spider Eyes
+                int dropCount = 1 + world.getRandom().nextInt(2);
+                popResource(world, pos, new ItemStack(Items.SPIDER_EYE, dropCount));
+
+                if (stack.isDamageableItem()) {
+                    stack.hurtWithoutBreaking(1, player);
+                } else {
+                    stack.shrink(1);
+                }
+            }
+            return InteractionResult.SUCCESS;
+        }
+
+        // Handle burning the egg block
         if (stack.getItem() instanceof FlintAndSteelItem && !state.getValue(PREVENTED)) {
             if (!world.isClientSide()) {
                 world.setBlock(pos, state.setValue(PREVENTED, true), Block.UPDATE_ALL);
