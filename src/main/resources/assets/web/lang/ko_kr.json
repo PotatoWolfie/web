@@ -1,0 +1,25 @@
+{
+  "item.web.spider_egg": "거미 알",
+  "item.web.spider_egg_shells": "거미 알 껍질",
+  "item.web.spider_moss": "스파이더 모스",
+  "item.web.spider_moss_carpet": "스파이더 모스 카펫",
+  "item.web.spider_web_block": "거미줄",
+  "item.web.spider_grass": "스파이더 글라스",
+
+  "block.web.spider_web": "거미줄",
+
+  "entity.web.spider_web": "거미줄",
+  "entity.web.spider_web_flying": "하늘을 나는 거미줄",
+  "entity.web.baby_spider": "베이비 스파이더",
+
+  "web.subtitles.web.throw": "웹스핏",
+  "web.subtitles.web.land": "웹랜드",
+
+  "advancement.web.burn_the_nest.title": "둥지를 불태우다",
+  "advancement.web.burn_the_nest.description": "부싯돌과 부싯쇠를 사용하여 거미 알을 불태운다.",
+
+  "painting.web.spider_web.author": "PotatoWolfie",
+  "painting.web.spider_web.title": "거미줄",
+
+  "modmenu.descriptionTranslation.web": "'Web'은 거미에게 새로운 행동과 애니메이션을 추가하여 거미의 요소를 확장하는 모드입니다. 거미는 거미줄을 뱉어 플레이어를 붙잡을 수 있으며, 지하에 있는 거미 알 덩어리에서는 새끼 거미가 부화합니다. 이러한 공격 방식과 움직임은 '마인크래프트 던전스(Minecraft Dungeons)'에 등장하는 거미의 묘사에서 영감을 받았습니다."
+}
