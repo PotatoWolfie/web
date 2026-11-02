@@ -37,13 +37,13 @@ public class CaveSpiderRendererMixin {
         if (spiderEntity instanceof CaveSpider caveSpider &&
                 caveSpider instanceof CaveSpiderAnimationInterface animatedCaveSpider &&
                 renderState instanceof CaveSpiderEntityRenderState caveSpiderRenderState) {
-            caveSpiderRenderState.idleAnimationState.copyFrom(animatedCaveSpider.web_1_21_6_7$getCaveSpiderIdleAnimationState());
-            caveSpiderRenderState.walkingAnimationState.copyFrom(animatedCaveSpider.web_1_21_6_7$getCaveSpiderWalkingAnimationState());
+            caveSpiderRenderState.idleAnimationState.copyFrom(animatedCaveSpider.web$getCaveSpiderIdleAnimationState());
+            caveSpiderRenderState.walkingAnimationState.copyFrom(animatedCaveSpider.web$getCaveSpiderWalkingAnimationState());
         }
         else if (spiderEntity instanceof SpiderAnimationInterface animatedSpider &&
                 renderState instanceof SpiderEntityRenderState spiderRenderState) {
-            spiderRenderState.idleAnimationState.copyFrom(animatedSpider.web_1_21_6_7$getIdleAnimationState());
-            spiderRenderState.walkingAnimationState.copyFrom(animatedSpider.web_1_21_6_7$getWalkingAnimationState());
+            spiderRenderState.idleAnimationState.copyFrom(animatedSpider.web$getIdleAnimationState());
+            spiderRenderState.walkingAnimationState.copyFrom(animatedSpider.web$getWalkingAnimationState());
         }
     }
 }

@@ -2,13 +2,16 @@ package potatowolfie.web.item.custom;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Position;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ProjectileItem;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ClipContext;
@@ -18,9 +21,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import potatowolfie.web.entity.custom.SpiderWebProjectileEntity;
+import potatowolfie.web.entity.spider_web_projectile.SpiderWebProjectileEntity;
 
-public class SpiderWebItem extends BlockItem {
+public class SpiderWebItem extends BlockItem implements ProjectileItem {
     private static final int COOLDOWN_TICKS = 60;
     private static final double SURVIVAL_REACH_DISTANCE = 3.0;
     private static final double CREATIVE_REACH_DISTANCE = 5.0;
@@ -106,5 +109,10 @@ public class SpiderWebItem extends BlockItem {
     @Override
     protected boolean canPlace(BlockPlaceContext context, BlockState state) {
         return true;
+    }
+
+    @Override
+    public Projectile asProjectile(Level level, Position position, ItemStack itemStack, Direction direction) {
+        return new SpiderWebProjectileEntity(level, position.x(), position.y(), position.z());
     }
 }

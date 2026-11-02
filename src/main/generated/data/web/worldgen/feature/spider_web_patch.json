@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:simple_block",
+  "to_place": {
+    "id": "web:spider_web_block",
+    "properties": {
+      "facing": "up",
+      "web_type": "ground"
+    }
+  }
+}

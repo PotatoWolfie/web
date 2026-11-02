@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "part=root": {
+      "model": "web:block/spider_succulent_root"
+    },
+    "part=top": {
+      "model": "web:block/spider_succulent_top"
+    },
+    "part=blossom": {
+      "model": "web:block/spider_succulent_blossom"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+// 26.3	-999999999-01-01T00:00:00	Web/Tags for minecraft:block
+b627de67016731694957cd4dee45f87d1a164ce6 data/minecraft/tags/block/dirt.json
+a410a52b0253d2503be8d48860186071b4cf208e data/minecraft/tags/block/fall_damage_resetting.json
+af2813a760a0f1477d8d541a55f348efbbc788fc data/minecraft/tags/block/mineable/hoe.json
+2bffd79b92e66ac00871caca6a7ea55a867a7196 data/minecraft/tags/block/mineable/shovel.json
+5aaaf379f599aabe935f3f7b9dd2a66d7350cd2d data/minecraft/tags/block/replaceable.json
+5aaaf379f599aabe935f3f7b9dd2a66d7350cd2d data/minecraft/tags/block/replaceable_by_mushrooms.json
+5aaaf379f599aabe935f3f7b9dd2a66d7350cd2d data/minecraft/tags/block/replaceable_by_trees.json
+aaad7d78bbc4c9bb3d04dea54d86d5a9565481c4 data/minecraft/tags/block/supports_vegetation.json
+3f2de28e259f143956e06661b32adb1ca4203017 data/minecraft/tags/block/sword_efficient.json
+7112ba9c582c2f912ed1c9f4ff06fc32d492b23b data/minecraft/tags/block/washed_away_by_fluids.json
+a249c46329a41538f49a564e1f14338aaf1be5a0 data/web/tags/block/incorrect_for_abominable_fang_tool.json
+a249c46329a41538f49a564e1f14338aaf1be5a0 data/web/tags/block/incorrect_for_fang_tool.json

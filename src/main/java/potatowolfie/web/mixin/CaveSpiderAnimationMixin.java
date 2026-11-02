@@ -133,7 +133,7 @@ public class CaveSpiderAnimationMixin implements CaveSpiderAnimationInterface {
     }
 
     @Unique
-    public void web_1_21_6_7$onCaveSpiderDataTrackerSync(EntityDataAccessor<?> data, CallbackInfo ci) {
+    public void web$onCaveSpiderDataTrackerSync(EntityDataAccessor<?> data, CallbackInfo ci) {
         Spider spider = (Spider) (Object) this;
 
         if (!(spider instanceof CaveSpider)) {
@@ -159,7 +159,7 @@ public class CaveSpiderAnimationMixin implements CaveSpiderAnimationInterface {
     }
 
     @Unique
-    public void web_1_21_6_7$writeCaveSpiderCustomData(ValueOutput nbt) {
+    public void web$writeCaveSpiderCustomData(ValueOutput nbt) {
         Spider spider = (Spider) (Object) this;
 
         if (spider instanceof CaveSpider) {
@@ -168,7 +168,7 @@ public class CaveSpiderAnimationMixin implements CaveSpiderAnimationInterface {
     }
 
     @Unique
-    public void web_1_21_6_7$readCaveSpiderCustomData(ValueInput nbt) {
+    public void web$readCaveSpiderCustomData(ValueInput nbt) {
         Spider spider = (Spider) (Object) this;
 
         if (!(spider instanceof CaveSpider)) {
@@ -193,25 +193,25 @@ public class CaveSpiderAnimationMixin implements CaveSpiderAnimationInterface {
 
     @Override
     @Unique
-    public AnimationState web_1_21_6_7$getCaveSpiderIdleAnimationState() {
+    public AnimationState web$getCaveSpiderIdleAnimationState() {
         return caveSpiderIdleAnimationState;
     }
 
     @Override
     @Unique
-    public AnimationState web_1_21_6_7$getCaveSpiderWalkingAnimationState() {
+    public AnimationState web$getCaveSpiderWalkingAnimationState() {
         return caveSpiderWalkingAnimationState;
     }
 
     @Override
     @Unique
-    public CaveSpiderState web_1_21_6_7$getCaveSpiderState() {
+    public CaveSpiderState web$getCaveSpiderState() {
         return caveSpiderState;
     }
 
     @Override
     @Unique
-    public CaveSpiderState web_1_21_6_7$getPreviousState() {
+    public CaveSpiderState web$getPreviousState() {
         return previousCaveSpiderState;
     }
 }

@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.levelgen.GenerationStep;
+import potatowolfie.web.world.biome.WebBiomes;
 import potatowolfie.web.world.feature.WebPlacedFeatures;
 
 public class WebBiomeModifications {
@@ -27,6 +28,36 @@ public class WebBiomeModifications {
                         )),
                 GenerationStep.Decoration.UNDERGROUND_DECORATION,
                 WebPlacedFeatures.SPIDER_EGG_CLUSTER_PLACED_KEY
+        );
+
+        BiomeModifications.addFeature(
+                BiomeSelectors.includeByKey(WebBiomes.NESTED_CAVES),
+                GenerationStep.Decoration.VEGETAL_DECORATION,
+                WebPlacedFeatures.SPIDER_GRASS_PLACED_KEY
+        );
+
+        BiomeModifications.addFeature(
+                BiomeSelectors.includeByKey(WebBiomes.NESTED_CAVES),
+                GenerationStep.Decoration.UNDERGROUND_DECORATION,
+                WebPlacedFeatures.SPIDER_EGG_PATCH_PLACED_KEY
+        );
+
+        BiomeModifications.addFeature(
+                BiomeSelectors.includeByKey(WebBiomes.NESTED_CAVES),
+                GenerationStep.Decoration.UNDERGROUND_DECORATION,
+                WebPlacedFeatures.SPIDER_EGG_SHELL_PATCH_PLACED_KEY
+        );
+
+        BiomeModifications.addFeature(
+                BiomeSelectors.includeByKey(WebBiomes.NESTED_CAVES),
+                GenerationStep.Decoration.VEGETAL_DECORATION,
+                WebPlacedFeatures.SPIDER_SUCCULENT_PATCH_PLACED_KEY
+        );
+
+        BiomeModifications.addFeature(
+                BiomeSelectors.includeByKey(WebBiomes.NESTED_CAVES),
+                GenerationStep.Decoration.VEGETAL_DECORATION,
+                WebPlacedFeatures.SPIDER_WEB_PATCH_PLACED_KEY
         );
     }
 }

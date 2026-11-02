@@ -1,6 +1,5 @@
 package potatowolfie.web.block.custom;
 
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -38,13 +37,6 @@ public class SpiderEggShellsBlock extends MultifaceSpreadeableBlock {
         this.registerDefaultState(this.defaultBlockState()
                 .setValue(TEXTURE_VARIANT, false)
                 .setValue(INITIALIZED, false));
-    }
-
-    public static final MapCodec<SpiderEggShellsBlock> CODEC = simpleCodec(SpiderEggShellsBlock::new);
-
-    @Override
-    public MapCodec<SpiderEggShellsBlock> codec() {
-        return CODEC;
     }
 
     @Override
@@ -146,6 +138,7 @@ public class SpiderEggShellsBlock extends MultifaceSpreadeableBlock {
     private boolean canPlaceOn(LevelReader world, BlockPos pos, Direction direction) {
         BlockPos adjacentPos = pos.relative(direction);
         BlockState adjacentState = world.getBlockState(adjacentPos);
+
         return adjacentState.isFaceSturdy(world, adjacentPos, direction.getOpposite());
     }
 

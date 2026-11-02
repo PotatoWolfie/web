@@ -1,10 +1,20 @@
 {
-  "variants": {
-    "prevented=false": {
-      "model": "web:block/spider_egg"
+  "multipart": [
+    {
+      "when": { "stage": "old" },
+      "apply": { "model": "web:block/spider_egg_old" }
     },
-    "prevented=true": {
-      "model": "web:block/spider_egg"
+    {
+      "when": { "stage": "active" },
+      "apply": { "model": "web:block/spider_egg" }
+    },
+    {
+      "when": { "stage": "decayed", "covered": "false" },
+      "apply": { "model": "web:block/spider_egg_decayed" }
+    },
+    {
+      "when": { "stage": "decayed", "covered": "true" },
+      "apply": { "model": "web:block/spider_egg" }
     }
-  }
+  ]
 }

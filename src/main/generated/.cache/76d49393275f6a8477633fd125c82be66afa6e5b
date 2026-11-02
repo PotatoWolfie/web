@@ -1,0 +1,11 @@
+// 26.3	-999999999-01-01T00:00:00	Web/Tags for minecraft:item
+3e171114c0f63a0d1292e28c855bcd97be26a498 data/minecraft/tags/item/breaks_decorated_pots.json
+b627de67016731694957cd4dee45f87d1a164ce6 data/minecraft/tags/item/dirt.json
+3e171114c0f63a0d1292e28c855bcd97be26a498 data/minecraft/tags/item/enchantable/durability.json
+3e171114c0f63a0d1292e28c855bcd97be26a498 data/minecraft/tags/item/enchantable/fire_aspect.json
+3e171114c0f63a0d1292e28c855bcd97be26a498 data/minecraft/tags/item/enchantable/melee_weapon.json
+3e171114c0f63a0d1292e28c855bcd97be26a498 data/minecraft/tags/item/enchantable/sharp_weapon.json
+3e171114c0f63a0d1292e28c855bcd97be26a498 data/minecraft/tags/item/enchantable/weapon.json
+5aee9f87cb274deb8bc1dbade28efb614d8be280 data/minecraft/tags/item/trim_materials.json
+fb338753cd4f370714c3056cc5d28ed7875d3c93 data/web/tags/item/abominable_fang_repair.json
+fb338753cd4f370714c3056cc5d28ed7875d3c93 data/web/tags/item/fang_repair.json

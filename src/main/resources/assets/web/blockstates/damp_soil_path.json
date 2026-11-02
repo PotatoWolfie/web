@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "web:block/damp_soil_path"
+      },
+      {
+        "model": "web:block/damp_soil_path",
+        "y": 90
+      },
+      {
+        "model": "web:block/damp_soil_path",
+        "y": 180
+      },
+      {
+        "model": "web:block/damp_soil_path",
+        "y": 270
+      }
+    ]
+  }
+}

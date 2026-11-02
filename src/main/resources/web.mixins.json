@@ -8,7 +8,9 @@
     "LivingEntityMixin",
     "MobEntityMixin",
     "SpawnEggItemMixin",
-    "SpiderEntityMixin"
+    "SpiderEntityMixin",
+    "SpiderFireDamageMixin",
+    "SplashTextMixin"
   ],
   "injectors": {
     "defaultRequire": 1

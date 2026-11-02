@@ -1,0 +1,24 @@
+{
+  "item.web.spider_egg": "蜘蛛卵",
+  "item.web.spider_egg_shells": "蜘蛛卵壳",
+  "item.web.spider_moss": "蜘蛛苔藓",
+  "item.web.spider_web_block": "蜘蛛网",
+  "item.web.spider_grass": "蜘蛛草",
+
+  "block.web.spider_web": "蜘蛛网",
+
+  "entity.web.spider_web": "蜘蛛网",
+  "entity.web.spider_web_flying": "飞行中的蜘蛛网",
+  "entity.web.baby_spider": "小蜘蛛",
+
+  "web.subtitles.web.throw": "蜘蛛网：被喷射",
+  "web.subtitles.web.land": "蜘蛛网：落地",
+
+  "advancement.web.burn_the_nest.title": "端掉老巢",
+  "advancement.web.burn_the_nest.description": "使用打火石点燃蜘蛛卵",
+
+  "painting.web.spider_web.author": "PotatoWolfie",
+  "painting.web.spider_web.title": "Spider Web",
+
+  "modmenu.descriptionTranslation.web": "织网是一款增强原版蜘蛛行为的模组，它为蜘蛛赋予了全新的行动方式和动画。现在，蜘蛛可以喷射蛛网来困住玩家，而在地下中发现的蜘蛛卵还会孵化出小蜘蛛。其灵感源自《我的世界：地下城》中蜘蛛的行为方式。"
+}

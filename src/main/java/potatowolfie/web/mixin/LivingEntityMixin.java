@@ -13,14 +13,139 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import potatowolfie.web.Web;
+import potatowolfie.web.block.custom.GelClimber;
 import potatowolfie.web.block.custom.SpiderWebBlock;
-import potatowolfie.web.entity.custom.SpiderWebEntity;
+import potatowolfie.web.entity.spider_web.SpiderWebEntity;
 
 @Mixin(LivingEntity.class)
-public class LivingEntityMixin {
+public class LivingEntityMixin implements GelClimber {
+
+    @Unique
+    private int web$gelStickTicks = 0;
+
+    @Unique
+    private int web$gelCountTick = -1;
+
+    @Unique
+    private int web$gelClimbTick = -1000;
+
+    @Unique
+    private int web$gelHoldTick = -1000;
+
+    @Unique
+    private static final double GEL_HOLD_DRAG = 0.85;
+
+    @Unique
+    private static final double GEL_HOLD_INPUT_BOOST = 1.4;
+
+    @Unique
+    private static final double GEL_WALL_DRAG = 0.85;
+
+    @Unique
+    private static final double GEL_WALL_AIR_INPUT_BOOST = 1.4;
+
+    @Unique
+    private static final double GEL_WALL_CLIMB_Y_MULTIPLIER = 0.85;
+
+    @Unique
+    private static final double GEL_WALL_MAX_SLIDE_SPEED = -0.067;
+
+    @Override
+    public int web$getStickTicks() {
+        return this.web$gelStickTicks;
+    }
+
+    @Override
+    public void web$setStickTicks(int ticks) {
+        this.web$gelStickTicks = ticks;
+    }
+
+    @Override
+    public int web$getLastCountTick() {
+        return this.web$gelCountTick;
+    }
+
+    @Override
+    public void web$setLastCountTick(int tick) {
+        this.web$gelCountTick = tick;
+    }
+
+    @Override
+    public void web$allowGelClimb() {
+        this.web$gelClimbTick = ((LivingEntity) (Object) this).tickCount;
+    }
+
+    @Override
+    public boolean web$canGelClimb() {
+        return ((LivingEntity) (Object) this).tickCount - this.web$gelClimbTick <= 1;
+    }
+
+    @Override
+    public void web$allowGelHold() {
+        this.web$gelHoldTick = ((LivingEntity) (Object) this).tickCount;
+    }
+
+    @Override
+    public boolean web$isGelHolding() {
+        return ((LivingEntity) (Object) this).tickCount - this.web$gelHoldTick <= 2;
+    }
+
+    @Override
+    public void web$releaseGelHold() {
+        this.web$gelHoldTick = -1000;
+    }
+
+    @ModifyVariable(method = "travel", at = @At("HEAD"), argsOnly = true)
+    private Vec3 web$gelBoostInput(Vec3 movementInput) {
+        if (this.web$isGelHolding()) {
+            return new Vec3(movementInput.x * GEL_HOLD_INPUT_BOOST, movementInput.y, movementInput.z * GEL_HOLD_INPUT_BOOST);
+        }
+        if (this.web$isGelWallClinging() && !((LivingEntity) (Object) this).onGround()) {
+            return new Vec3(movementInput.x * GEL_WALL_AIR_INPUT_BOOST, movementInput.y, movementInput.z * GEL_WALL_AIR_INPUT_BOOST);
+        }
+        return movementInput;
+    }
+
+    @Inject(method = "travel", at = @At("HEAD"))
+    private void web$gelHoldTravel(Vec3 movementInput, CallbackInfo ci) {
+        if (this.web$isGelHolding()) {
+            LivingEntity self = (LivingEntity) (Object) this;
+            Vec3 delta = self.getDeltaMovement();
+            self.setDeltaMovement(delta.x * GEL_HOLD_DRAG, 0.0, delta.z * GEL_HOLD_DRAG);
+            self.resetFallDistance();
+        } else if (this.web$isGelWallClinging()) {
+            LivingEntity self = (LivingEntity) (Object) this;
+            Vec3 delta = self.getDeltaMovement();
+            double y = delta.y > 0.0
+                    ? delta.y * GEL_WALL_CLIMB_Y_MULTIPLIER
+                    : Math.max(delta.y, GEL_WALL_MAX_SLIDE_SPEED);
+            self.setDeltaMovement(delta.x * GEL_WALL_DRAG, y, delta.z * GEL_WALL_DRAG);
+        }
+    }
+
+    @Unique
+    private boolean web$isGelWallClinging() {
+        return this.web$canGelClimb() && !this.web$isGelHolding();
+    }
+
+    @Inject(method = "tick", at = @At("HEAD"))
+    private void web$resetGelStickOnGround(CallbackInfo ci) {
+        if (((LivingEntity) (Object) this).onGround()) {
+            this.web$gelStickTicks = 0;
+        }
+    }
+
+    @Inject(method = "onClimbable", at = @At("RETURN"), cancellable = true)
+    private void web$gelClimbable(CallbackInfoReturnable<Boolean> cir) {
+        LivingEntity self = (LivingEntity) (Object) this;
+        if (!cir.getReturnValueZ() && !self.isSpectator() && !self.isFallFlying() && !this.web$isGelHolding() && this.web$canGelClimb()) {
+            cir.setReturnValue(true);
+        }
+    }
 
     @Unique
     private static final TagKey<EntityType<?>> WEB_IMMUNE_TAG = TagKey.create(Registries.ENTITY_TYPE,
@@ -50,6 +175,27 @@ public class LivingEntityMixin {
                 if (web.isTrapping()) {
                     return true;
                 }
+            }
+        }
+        return false;
+    }
+
+    @Unique
+    private static final double HANGING_WEB_CLIMB_SPEED_MULTIPLIER = 0.4;
+
+    @Unique
+    private static boolean web_isClimbingHangingWeb(LivingEntity entity) {
+        BlockPos pos = entity.blockPosition();
+        BlockState state = entity.level().getBlockState(pos);
+
+        if (state.getBlock() instanceof SpiderWebBlock) {
+            SpiderWebBlock.WebType webType = state.getValue(SpiderWebBlock.WEB_TYPE);
+            if (webType != SpiderWebBlock.WebType.GROUND) {
+                double centerX = pos.getX() + 0.5;
+                double centerZ = pos.getZ() + 0.5;
+                double distanceFromCenter = Math.sqrt(
+                        Math.pow(entity.getX() - centerX, 2) + Math.pow(entity.getZ() - centerZ, 2));
+                return distanceFromCenter <= 0.4;
             }
         }
         return false;
@@ -110,13 +256,31 @@ public class LivingEntityMixin {
             }
 
             if (isPlayerOwnedWeb) {
-                double speedFactor = potatowolfie.web.entity.custom.SpiderWebEntity.PLAYER_WEB_SPEED_MULTIPLIER;
+                double speedFactor = SpiderWebEntity.PLAYER_WEB_SPEED_MULTIPLIER;
 
                 return new Vec3(movementInput.x * speedFactor, movementInput.y, movementInput.z * speedFactor);
             }
         }
 
         return movementInput;
+    }
+
+    @Inject(method = "travel", at = @At("HEAD"))
+    private void slowHangingWebClimb(Vec3 movementInput, CallbackInfo ci) {
+        LivingEntity entity = (LivingEntity)(Object)this;
+
+        if (isWebImmune(entity)) {
+            return;
+        }
+
+        if (entity.onClimbable() && web_isClimbingHangingWeb(entity)) {
+            Vec3 delta = entity.getDeltaMovement();
+            entity.setDeltaMovement(
+                    delta.x,
+                    delta.y * HANGING_WEB_CLIMB_SPEED_MULTIPLIER,
+                    delta.z
+            );
+        }
     }
 
     @Inject(method = "travel", at = @At("HEAD"), cancellable = true)
@@ -172,22 +336,9 @@ public class LivingEntityMixin {
     @Inject(method = "onClimbable", at = @At("HEAD"), cancellable = true)
     private void checkSpiderWebClimbing(CallbackInfoReturnable<Boolean> cir) {
         LivingEntity entity = (LivingEntity) (Object) this;
-        BlockPos pos = entity.blockPosition();
-        BlockState state = entity.level().getBlockState(pos);
 
-        if (state.getBlock() instanceof SpiderWebBlock spiderWebBlock) {
-            SpiderWebBlock.WebType webType = state.getValue(SpiderWebBlock.WEB_TYPE);
-            if (webType != SpiderWebBlock.WebType.GROUND) {
-                double centerX = pos.getX() + 0.5;
-                double centerZ = pos.getZ() + 0.5;
-                double entityX = entity.getX();
-                double entityZ = entity.getZ();
-                double distanceFromCenter = Math.sqrt(Math.pow(entityX - centerX, 2) + Math.pow(entityZ - centerZ, 2));
-
-                if (distanceFromCenter <= 0.4) {
-                    cir.setReturnValue(true);
-                }
-            }
+        if (web_isClimbingHangingWeb(entity)) {
+            cir.setReturnValue(true);
         }
     }
 }

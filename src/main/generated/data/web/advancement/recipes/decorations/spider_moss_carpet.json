@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "web:spider_moss_carpet"
+        "recipes": "web:spider_moss_carpet"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

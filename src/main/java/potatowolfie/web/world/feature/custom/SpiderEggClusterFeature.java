@@ -1,11 +1,18 @@
 package potatowolfie.web.world.feature.custom;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import potatowolfie.web.block.WebBlocks;
+import potatowolfie.web.block.custom.EggStage;
+import potatowolfie.web.block.custom.SpiderEggBlock;
 import potatowolfie.web.block.custom.SpiderEggShellsBlock;
+import potatowolfie.web.block.custom.SpiderSucculentBlock;
 import potatowolfie.web.block.custom.SpiderWebBlock;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -15,21 +22,32 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 
-public class SpiderEggClusterFeature extends Feature<SpiderEggClusterFeatureConfig> {
+public record SpiderEggClusterFeature(
+        int minClusterSize,
+        int maxClusterSize,
+        int nestSpreadRadius,
+        float eggChance,
+        float oldClusterChance
+) implements Feature {
 
-    public SpiderEggClusterFeature(Codec<SpiderEggClusterFeatureConfig> codec) {
-        super(codec);
+    public static final MapCodec<SpiderEggClusterFeature> CODEC = RecordCodecBuilder.mapCodec(instance ->
+            instance.group(
+                    Codec.intRange(1, 20).fieldOf("min_cluster_size").forGetter(SpiderEggClusterFeature::minClusterSize),
+                    Codec.intRange(1, 40).fieldOf("max_cluster_size").forGetter(SpiderEggClusterFeature::maxClusterSize),
+                    Codec.intRange(1, 10).fieldOf("nest_spread_radius").forGetter(SpiderEggClusterFeature::nestSpreadRadius),
+                    Codec.floatRange(0.0f, 1.0f).fieldOf("egg_chance").forGetter(SpiderEggClusterFeature::eggChance),
+                    Codec.floatRange(0.0f, 1.0f).optionalFieldOf("old_cluster_chance", 0.05f).forGetter(SpiderEggClusterFeature::oldClusterChance)
+            ).apply(instance, SpiderEggClusterFeature::new)
+    );
+
+    public MapCodec<SpiderEggClusterFeature> codec() {
+        return CODEC;
     }
 
     @Override
-    public boolean place(FeaturePlaceContext<SpiderEggClusterFeatureConfig> context) {
-        WorldGenLevel world = context.level();
-        BlockPos origin = context.origin();
-        RandomSource random = context.random();
-        SpiderEggClusterFeatureConfig config = context.config();
-
+    public boolean place(WorldGenLevel world, ChunkGenerator chunkGenerator, RandomSource random, BlockPos origin) {
         BlockPos actualOrigin = findValidOrigin(world, origin);
         if (actualOrigin == null) {
             return false;
@@ -39,8 +57,10 @@ public class SpiderEggClusterFeature extends Feature<SpiderEggClusterFeatureConf
             return false;
         }
 
+        boolean isOldCluster = random.nextFloat() < oldClusterChance();
+
         Set<BlockPos> mainEggPositions = new HashSet<>();
-        boolean generatedMainNests = generateMainNestStructures(world, actualOrigin, random, mainEggPositions);
+        boolean generatedMainNests = generateNestStructures(world, actualOrigin, random, mainEggPositions, isOldCluster);
         if (!generatedMainNests) {
             return false;
         }
@@ -49,8 +69,8 @@ public class SpiderEggClusterFeature extends Feature<SpiderEggClusterFeatureConf
         Set<BlockPos> nestPositions = new HashSet<>();
 
         for (int i = 0; i < clusterSize; i++) {
-            int x = actualOrigin.getX() + random.nextIntBetweenInclusive(-config.nestSpreadRadius(), config.nestSpreadRadius());
-            int z = actualOrigin.getZ() + random.nextIntBetweenInclusive(-config.nestSpreadRadius(), config.nestSpreadRadius());
+            int x = actualOrigin.getX() + random.nextIntBetweenInclusive(-nestSpreadRadius(), nestSpreadRadius());
+            int z = actualOrigin.getZ() + random.nextIntBetweenInclusive(-nestSpreadRadius(), nestSpreadRadius());
 
             BlockPos floorPos = findFloorPosition(world, new BlockPos(x, actualOrigin.getY(), z));
             if (floorPos != null && canPlaceNest(world, floorPos)) {
@@ -79,16 +99,17 @@ public class SpiderEggClusterFeature extends Feature<SpiderEggClusterFeatureConf
             }
         }
 
-        generateEggsOnNests(world, nestPositions, random, config, mainEggPositions);
-        generateStandaloneEggs(world, actualOrigin, random, nestPositions, mainEggPositions);
-        generateSpiderWebBlocks(world, actualOrigin, random, nestPositions);
-        generateSpiderGrassOnMoss(world, nestPositions, random);
-        placeSpiderEggShells(world, actualOrigin, nestPositions, random, config);
+        generateEggs(world, nestPositions, random, mainEggPositions, isOldCluster);
+        generateStandaloneEggs(world, actualOrigin, random, nestPositions, mainEggPositions, isOldCluster);
+        generateSpiderWebs(world, actualOrigin, random, nestPositions);
+        generateSpiderGrass(world, nestPositions, random);
+        generateSpiderEggShells(world, actualOrigin, nestPositions, random);
+        generateSpiderSucculents(world, nestPositions, random);
 
         return !nestPositions.isEmpty();
     }
 
-    private boolean generateMainNestStructures(WorldGenLevel world, BlockPos origin, RandomSource random, Set<BlockPos> mainEggPositions) {
+    private boolean generateNestStructures(WorldGenLevel world, BlockPos origin, RandomSource random, Set<BlockPos> mainEggPositions, boolean isOldCluster) {
         boolean placedAny = false;
         int attempts = 0;
         int structures = 0;
@@ -109,7 +130,7 @@ public class SpiderEggClusterFeature extends Feature<SpiderEggClusterFeatureConf
 
                     BlockPos topEggPos = topNestPos.above();
                     if (world.getBlockState(topEggPos).isAir()) {
-                        world.setBlock(topEggPos, WebBlocks.SPIDER_EGG.defaultBlockState(), Block.UPDATE_ALL);
+                        world.setBlock(topEggPos, getEggBlockState(isOldCluster, random), Block.UPDATE_ALL);
                         mainEggPositions.add(topEggPos);
                     }
 
@@ -118,7 +139,7 @@ public class SpiderEggClusterFeature extends Feature<SpiderEggClusterFeatureConf
                         BlockPos sidePos = floorPos.relative(direction);
                         BlockPos sideEggPos = sidePos.above();
                         if (world.getBlockState(sideEggPos).isAir() && canReplaceForNest(world.getBlockState(sidePos))) {
-                            world.setBlock(sideEggPos, WebBlocks.SPIDER_EGG.defaultBlockState(), Block.UPDATE_ALL);
+                            world.setBlock(sideEggPos, getEggBlockState(isOldCluster, random), Block.UPDATE_ALL);
                             mainEggPositions.add(sideEggPos);
                         }
                     }
@@ -132,7 +153,7 @@ public class SpiderEggClusterFeature extends Feature<SpiderEggClusterFeatureConf
         return placedAny;
     }
 
-    private void generateEggsOnNests(WorldGenLevel world, Set<BlockPos> nestPositions, RandomSource random, SpiderEggClusterFeatureConfig config, Set<BlockPos> mainEggPositions) {
+    private void generateEggs(WorldGenLevel world, Set<BlockPos> nestPositions, RandomSource random, Set<BlockPos> mainEggPositions, boolean isOldCluster) {
         int maxEggs = Math.max(6, nestPositions.size() / 4);
         int eggsPlaced = 0;
         Set<BlockPos> usedEggPositions = new HashSet<>(mainEggPositions);
@@ -143,7 +164,7 @@ public class SpiderEggClusterFeature extends Feature<SpiderEggClusterFeatureConf
             BlockPos eggPos = nestPos.above();
             if (mainEggPositions.contains(eggPos)) continue;
 
-            if (random.nextFloat() < (config.eggChance() * 1.2f) && world.getBlockState(eggPos).isAir()) {
+            if (random.nextFloat() < (eggChance() * 1.2f) && world.getBlockState(eggPos).isAir()) {
                 boolean canPlace = true;
 
                 for (BlockPos usedPos : usedEggPositions) {
@@ -155,7 +176,7 @@ public class SpiderEggClusterFeature extends Feature<SpiderEggClusterFeatureConf
                 }
 
                 if (canPlace) {
-                    world.setBlock(eggPos, WebBlocks.SPIDER_EGG.defaultBlockState(), Block.UPDATE_ALL);
+                    world.setBlock(eggPos, getEggBlockState(isOldCluster, random), Block.UPDATE_ALL);
                     usedEggPositions.add(eggPos);
                     eggsPlaced++;
                 }
@@ -163,7 +184,7 @@ public class SpiderEggClusterFeature extends Feature<SpiderEggClusterFeatureConf
         }
     }
 
-    private void generateStandaloneEggs(WorldGenLevel world, BlockPos origin, RandomSource random, Set<BlockPos> nestPositions, Set<BlockPos> mainStructurePositions) {
+    private void generateStandaloneEggs(WorldGenLevel world, BlockPos origin, RandomSource random, Set<BlockPos> nestPositions, Set<BlockPos> mainStructurePositions, boolean isOldCluster) {
         Set<BlockPos> usedEggPositions = new HashSet<>(mainStructurePositions);
 
         for (BlockPos nestPos : nestPositions) {
@@ -191,23 +212,14 @@ public class SpiderEggClusterFeature extends Feature<SpiderEggClusterFeatureConf
                 }
 
                 if (canPlace) {
-                    world.setBlock(eggPos.above(), WebBlocks.SPIDER_EGG.defaultBlockState(), Block.UPDATE_ALL);
+                    world.setBlock(eggPos.above(), getEggBlockState(isOldCluster, random), Block.UPDATE_ALL);
                     usedEggPositions.add(eggPos.above());
                 }
             }
         }
     }
 
-    private boolean isNearMainStructure(BlockPos pos, Set<BlockPos> mainStructurePositions) {
-        for (BlockPos structurePos : mainStructurePositions) {
-            if (pos.distSqr(structurePos) <= 9) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void generateSpiderWebBlocks(WorldGenLevel world, BlockPos origin, RandomSource random, Set<BlockPos> nestPositions) {
+    private void generateSpiderWebs(WorldGenLevel world, BlockPos origin, RandomSource random, Set<BlockPos> nestPositions) {
         if (random.nextFloat() < 0.3f) {
             generateHangingWebs(world, origin, random);
 
@@ -284,7 +296,7 @@ public class SpiderEggClusterFeature extends Feature<SpiderEggClusterFeatureConf
         }
     }
 
-    private void generateSpiderGrassOnMoss(WorldGenLevel world, Set<BlockPos> nestPositions, RandomSource random) {
+    private void generateSpiderGrass(WorldGenLevel world, Set<BlockPos> nestPositions, RandomSource random) {
         int targetGrassCount = Math.max(3, nestPositions.size() * random.nextIntBetweenInclusive(30, 45) / 100);
         int grassPlaced = 0;
 
@@ -328,6 +340,54 @@ public class SpiderEggClusterFeature extends Feature<SpiderEggClusterFeatureConf
                 }
             }
         }
+    }
+
+    private void generateSpiderSucculents(WorldGenLevel world, Set<BlockPos> nestPositions, RandomSource random) {
+        if (nestPositions.isEmpty() || random.nextFloat() >= SUCCULENT_CLUSTER_CHANCE) {
+            return;
+        }
+
+        int succulentCount = random.nextIntBetweenInclusive(2, 3);
+        List<BlockPos> nests = new ArrayList<>(nestPositions);
+        int placed = 0;
+
+        for (int attempts = 0; attempts < 30 && placed < succulentCount; attempts++) {
+            BlockPos nestPos = nests.get(random.nextInt(nests.size()));
+            if (tryPlaceSucculent(world, nestPos, random)) {
+                placed++;
+            }
+        }
+    }
+
+    private boolean tryPlaceSucculent(WorldGenLevel world, BlockPos floorPos, RandomSource random) {
+        if (!world.getBlockState(floorPos).is(WebBlocks.SPIDER_MOSS)) {
+            return false;
+        }
+
+        int targetRoots = random.nextInt(4);
+
+        for (int i = 0; i <= targetRoots; i++) {
+            if (!world.getBlockState(floorPos.above(i + 1)).isAir()) {
+                return false;
+            }
+        }
+
+        for (int i = 0; i <= targetRoots; i++) {
+            BlockPos pos = floorPos.above(i + 1);
+            SpiderSucculentBlock.Part part = (i < targetRoots)
+                    ? SpiderSucculentBlock.Part.ROOT
+                    : SpiderSucculentBlock.Part.BLOSSOM;
+
+            BlockState state = WebBlocks.SPIDER_SUCCULENT.defaultBlockState()
+                    .setValue(SpiderSucculentBlock.PART, part)
+                    .setValue(SpiderSucculentBlock.TARGET_ROOTS, targetRoots);
+            world.setBlock(pos, state, Block.UPDATE_ALL);
+
+            if (i == targetRoots) {
+                world.scheduleTick(pos, WebBlocks.SPIDER_SUCCULENT, 10 + random.nextInt(20));
+            }
+        }
+        return true;
     }
 
     private Direction getRandomHorizontalDirection(RandomSource random) {
@@ -455,6 +515,22 @@ public class SpiderEggClusterFeature extends Feature<SpiderEggClusterFeatureConf
         return canReplaceForNest(floorState) && aboveState.isAir();
     }
 
+    private static final float SUCCULENT_CLUSTER_CHANCE = 0.05f;
+
+    private static final int MIN_DEFAULT_HATCH_TICKS = 18 * 60 * 20;
+    private static final int MAX_DEFAULT_HATCH_TICKS = 24 * 60 * 20;
+
+    private BlockState getEggBlockState(boolean isOldCluster, RandomSource random) {
+        BlockState state = WebBlocks.SPIDER_EGG.defaultBlockState();
+        if (isOldCluster) {
+            state = state.setValue(SpiderEggBlock.STAGE, EggStage.OLD);
+        } else {
+            int hatchTicks = MIN_DEFAULT_HATCH_TICKS + random.nextInt(MAX_DEFAULT_HATCH_TICKS - MIN_DEFAULT_HATCH_TICKS + 1);
+            state = state.setValue(SpiderEggBlock.REMAINING_TIME, hatchTicks);
+        }
+        return state;
+    }
+
     private boolean canReplaceForNest(BlockState state) {
         return state.is(Blocks.STONE) ||
                 state.is(Blocks.DEEPSLATE) ||
@@ -474,8 +550,8 @@ public class SpiderEggClusterFeature extends Feature<SpiderEggClusterFeatureConf
                 state.is(Blocks.AMETHYST_BLOCK);
     }
 
-    private void placeSpiderEggShells(WorldGenLevel world, BlockPos origin, Set<BlockPos> nestPositions, RandomSource random, SpiderEggClusterFeatureConfig config) {
-        int shellRadius = config.nestSpreadRadius() + 4;
+    private void generateSpiderEggShells(WorldGenLevel world, BlockPos origin, Set<BlockPos> nestPositions, RandomSource random) {
+        int shellRadius = nestSpreadRadius() + 4;
 
         int guaranteedShells = Math.max(10, nestPositions.size() / 3);
         int shellsPlaced = 0;
@@ -489,7 +565,7 @@ public class SpiderEggClusterFeature extends Feature<SpiderEggClusterFeatureConf
 
             float chance = shellsPlaced < guaranteedShells ? 0.85f : 0.6f;
             if (random.nextFloat() < chance) {
-                if (tryPlaceShellOnSurface(world, shellPos, random)) {
+                if (tryPlaceShell(world, shellPos, random)) {
                     shellsPlaced++;
                 }
             }
@@ -511,14 +587,14 @@ public class SpiderEggClusterFeature extends Feature<SpiderEggClusterFeatureConf
                     int z = nestPos.getZ() + random.nextIntBetweenInclusive(-5, 5);
 
                     BlockPos shellPos = new BlockPos(x, y, z);
-                    tryPlaceShellOnSurface(world, shellPos, random);
+                    tryPlaceShell(world, shellPos, random);
                 }
                 nestsWithShells++;
             }
         }
     }
 
-    private boolean tryPlaceShellOnSurface(WorldGenLevel world, BlockPos pos, RandomSource random) {
+    private boolean tryPlaceShell(WorldGenLevel world, BlockPos pos, RandomSource random) {
         if (!world.getBlockState(pos).isAir()) {
             return false;
         }
@@ -573,6 +649,10 @@ public class SpiderEggClusterFeature extends Feature<SpiderEggClusterFeatureConf
                 state.is(Blocks.COARSE_DIRT) ||
                 state.is(Blocks.MOSS_BLOCK) ||
                 state.is(Blocks.CLAY) ||
-                state.is(WebBlocks.SPIDER_MOSS);
+                state.is(WebBlocks.SPIDER_MOSS) ||
+                state.is(WebBlocks.SPIDER_MOSS_CARPET) ||
+                state.is(WebBlocks.DAMP_SOIL) ||
+                state.is(WebBlocks.SPROUTING_DAMP_SOIL) ||
+                state.is(WebBlocks.DAMP_SOIL_PATH);
     }
 }

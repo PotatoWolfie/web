@@ -1,0 +1,28 @@
+{
+  "parent": "minecraft:adventure/root",
+  "display": {
+    "icon": {
+      "id": "web:spider_egg_shells"
+    },
+    "title": {
+      "translate": "advancement.web.shell_on.title"
+    },
+    "description": {
+      "translate": "advancement.web.shell_on.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "shell_on": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "shell_on"
+    ]
+  ]
+}

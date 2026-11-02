@@ -37,8 +37,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import potatowolfie.web.Web;
 import potatowolfie.web.entity.WebEntities;
-import potatowolfie.web.entity.custom.BabySpiderEntity;
-import potatowolfie.web.entity.custom.SpiderWebProjectileEntity;
+import potatowolfie.web.entity.abominable_spider_queen.AbominableSpiderQueenEntity;
+import potatowolfie.web.entity.baby_spider.BabySpiderEntity;
+import potatowolfie.web.entity.spider_web_projectile.SpiderWebProjectileEntity;
 import potatowolfie.web.enums.SpiderState;
 import potatowolfie.web.goals.WebShootingSpiderAttackGoal;
 import potatowolfie.web.interfaces.SpiderAnimationInterface;
@@ -197,7 +198,7 @@ public class SpiderEntityMixin implements WebSpiderInterface, SpiderAnimationInt
     private void spawnWithBabyRider(ServerLevelAccessor world, DifficultyInstance difficulty, EntitySpawnReason spawnReason, SpawnGroupData entityData, CallbackInfoReturnable<SpawnGroupData> cir) {
         if (isCaveSpider()) return;
 
-        if (spawnReason == EntitySpawnReason.TRIAL_SPAWNER) return;
+        if (spawnReason != EntitySpawnReason.NATURAL) return;
 
         Spider spider = (Spider) (Object) this;
         RandomSource random = world.getRandom();
@@ -424,18 +425,30 @@ public class SpiderEntityMixin implements WebSpiderInterface, SpiderAnimationInt
     @Unique
     @Override
     public void onTrackedDataSet(EntityDataAccessor<?> data, CallbackInfo ci) {
-        web_1_21_6_7$onDataTrackerSync(data, ci);
+        web$onDataTrackerSync(data, ci);
     }
+
+    @Unique
+    private static final double WEB_SHOT_BACK_OFFSET = 0.8;
+    @Unique
+    private static final double WEB_SHOT_BACK_HEIGHT_RATIO = 1.1;
 
     @Unique
     private void performWebShot(LivingEntity target) {
         Spider spider = (Spider) (Object) this;
         Level world = spider.level();
 
-        SpiderWebProjectileEntity webProjectile = new SpiderWebProjectileEntity(world, spider);
-        webProjectile.setPos(spider.getX(), spider.getEyeY() - 0.1, spider.getZ());
+        float bodyYawRad = (float) Math.toRadians(spider.yBodyRot);
+        double backX = spider.getX() + Math.sin(bodyYawRad) * WEB_SHOT_BACK_OFFSET;
+        double backZ = spider.getZ() - Math.cos(bodyYawRad) * WEB_SHOT_BACK_OFFSET;
+        double backY = spider.getY() + spider.getBbHeight() * WEB_SHOT_BACK_HEIGHT_RATIO;
 
-        Vec3 spiderPos = new Vec3(spider.getX(), spider.getEyeY(), spider.getZ());
+        SpiderWebProjectileEntity webProjectile = spider instanceof AbominableSpiderQueenEntity queen
+                ? queen.createWebProjectile(world)
+                : new SpiderWebProjectileEntity(world, spider);
+        webProjectile.setPos(backX, backY, backZ);
+
+        Vec3 spiderPos = new Vec3(backX, backY, backZ);
         Vec3 targetVelocity = target.getDeltaMovement();
 
         double distance = spider.distanceTo(target);
@@ -541,46 +554,46 @@ public class SpiderEntityMixin implements WebSpiderInterface, SpiderAnimationInt
 
     @Override
     @Unique
-    public AnimationState web_1_21_6_7$getIdleAnimationState() {
+    public AnimationState web$getIdleAnimationState() {
         ensureAnimationStatesInitialized();
         return spiderIdleAnimationState;
     }
 
     @Override
     @Unique
-    public AnimationState web_1_21_6_7$getWalkingAnimationState() {
+    public AnimationState web$getWalkingAnimationState() {
         ensureAnimationStatesInitialized();
         return spiderWalkingAnimationState;
     }
 
     @Override
     @Unique
-    public AnimationState web_1_21_6_7$getShootingAnimationState() {
+    public AnimationState web$getShootingAnimationState() {
         ensureAnimationStatesInitialized();
         return spiderShootingAnimationState;
     }
 
     @Override
     @Unique
-    public SpiderState web_1_21_6_7$getSpiderState() {
+    public SpiderState web$getSpiderState() {
         return spiderState;
     }
 
     @Override
     @Unique
-    public SpiderState web_1_21_6_7$getPreviousState() {
+    public SpiderState web$getPreviousState() {
         return previousSpiderState;
     }
 
     @Override
     @Unique
-    public void web_1_21_6_7$setSpiderState(SpiderState state) {
+    public void web$setSpiderState(SpiderState state) {
         setSpiderState(state);
     }
 
     @Unique
     @Override
-    public void web_1_21_6_7$onDataTrackerSync(EntityDataAccessor<?> data, CallbackInfo ci) {
+    public void web$onDataTrackerSync(EntityDataAccessor<?> data, CallbackInfo ci) {
         Spider spider = (Spider) (Object) this;
 
         if (spider instanceof CaveSpider) {
@@ -606,7 +619,7 @@ public class SpiderEntityMixin implements WebSpiderInterface, SpiderAnimationInt
 
     @Unique
     @Override
-    public void web_1_21_6_7$writeCustomData(ValueOutput nbt) {
+    public void web$writeCustomData(ValueOutput nbt) {
         Spider spider = (Spider) (Object) this;
 
         if (!(spider instanceof CaveSpider)) {
@@ -616,7 +629,7 @@ public class SpiderEntityMixin implements WebSpiderInterface, SpiderAnimationInt
 
     @Unique
     @Override
-    public void web_1_21_6_7$readCustomData(ValueInput nbt) {
+    public void web$readCustomData(ValueInput nbt) {
         Spider spider = (Spider) (Object) this;
 
         if (spider instanceof CaveSpider) {

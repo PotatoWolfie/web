@@ -16,6 +16,7 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import potatowolfie.web.Web;
 import potatowolfie.web.block.custom.*;
+import potatowolfie.web.trim.WebTrimMaterials;
 
 import java.util.List;
 
@@ -29,7 +30,17 @@ public class WebBlocks {
                     .sound(SoundType.HONEY_BLOCK)
                     .strength(0.5f, 0.5f)
                     .destroyTime(0.5f)
-                    .lightLevel(state -> 3)
+                    .lightLevel(state -> {
+                        EggStage stage = state.getValue(SpiderEggBlock.STAGE);
+                        boolean covered = state.getValue(SpiderEggBlock.COVERED);
+                        if (stage == EggStage.OLD) {
+                            return 2;
+                        }
+                        if (stage == EggStage.ACTIVE || covered) {
+                            return 3;
+                        }
+                        return 0;
+                    })
             ));
 
     public static final Block SPIDER_EGG_SHELLS = registerBlock("spider_egg_shells",
@@ -43,7 +54,7 @@ public class WebBlocks {
                     .instabreak()
                     .noOcclusion()
                     .noCollision()
-                    .pushReaction(PushReaction.DESTROY)
+                    .pushReaction(PushReaction.POPPED)
                     .lightLevel(state -> 3)
             ));
 
@@ -70,7 +81,7 @@ public class WebBlocks {
                     .mapColor(MapColor.WARPED_STEM)
                     .sound(SoundType.GRASS)
                     .instabreak()
-                    .pushReaction(PushReaction.DESTROY)
+                    .pushReaction(PushReaction.POPPED)
                     .noCollision()
                     .replaceable()
                     .ignitedByLava()
@@ -79,13 +90,59 @@ public class WebBlocks {
     public static final Block SPIDER_WEB_BLOCK = registerBlock("spider_web_block",
             new SpiderWebBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COBWEB)
                     .ignitedByLava()
-                    .pushReaction(PushReaction.DESTROY)
+                    .pushReaction(PushReaction.POPPED)
                     .setId(ResourceKey.create(BuiltInRegistries.BLOCK.key(), Identifier.fromNamespaceAndPath(Web.MOD_ID, "spider_web_block")))
             ));
 
+    public static final Block DAMP_SOIL = registerBlock("damp_soil",
+            new DampSoilBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.DIRT)
+                    .setId(ResourceKey.create(BuiltInRegistries.BLOCK.key(), Identifier.fromNamespaceAndPath(Web.MOD_ID, "damp_soil")))
+            ));
+
+    public static final Block DAMP_SOIL_PATH = registerBlock("damp_soil_path",
+            new DampSoilPathBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.DIRT)
+                    .setId(ResourceKey.create(BuiltInRegistries.BLOCK.key(), Identifier.fromNamespaceAndPath(Web.MOD_ID, "damp_soil_path")))
+            ));
+
+    public static final Block SPROUTING_DAMP_SOIL = registerBlock("sprouting_damp_soil",
+            new DampSoilBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GRASS_BLOCK)
+                    .setId(ResourceKey.create(BuiltInRegistries.BLOCK.key(), Identifier.fromNamespaceAndPath(Web.MOD_ID, "sprouting_damp_soil")))
+            ));
+
+    public static final Block SUCCULENT_GEL = registerBlock("succulent_gel",
+            new SucculentGelBlock(BlockBehaviour.Properties.of()
+                    .setId(ResourceKey.create(BuiltInRegistries.BLOCK.key(), Identifier.fromNamespaceAndPath(Web.MOD_ID, "succulent_gel")))
+                    .mapColor(MapColor.COLOR_LIGHT_GREEN)
+                    .sound(SoundType.SLIME_BLOCK)
+                    .strength(0.2f)
+                    .noCollision()
+                    .noOcclusion()
+                    .pushReaction(PushReaction.POPPED)
+            ),
+            new Item.Properties()
+                    .setId(ResourceKey.create(BuiltInRegistries.ITEM.key(), Identifier.fromNamespaceAndPath(Web.MOD_ID, "succulent_gel")))
+                    .trimMaterial(WebTrimMaterials.SUCCULENT_GEL)
+    );
+
+    public static final Block SPIDER_SUCCULENT = registerBlock("spider_succulent",
+            new SpiderSucculentBlock(BlockBehaviour.Properties.of()
+                    .setId(ResourceKey.create(BuiltInRegistries.BLOCK.key(), Identifier.fromNamespaceAndPath(Web.MOD_ID, "spider_succulent")))
+                    .mapColor(MapColor.WARPED_STEM)
+                    .sound(SoundType.WOOL)
+                    .strength(0.4f)
+                    .randomTicks()
+                    .noOcclusion()
+                    .pushReaction(PushReaction.POPPED)
+            ));
 
     private static Block registerBlock(String name, Block block) {
         registerBlockItem(name, block);
+        return Registry.register(BuiltInRegistries.BLOCK, Identifier.fromNamespaceAndPath(Web.MOD_ID, name), block);
+    }
+
+    private static Block registerBlock(String name, Block block, Item.Properties itemProperties) {
+        Registry.register(BuiltInRegistries.ITEM, Identifier.fromNamespaceAndPath(Web.MOD_ID, name),
+                new BlockItem(block, itemProperties));
         return Registry.register(BuiltInRegistries.BLOCK, Identifier.fromNamespaceAndPath(Web.MOD_ID, name), block);
     }
 
@@ -104,7 +161,14 @@ public class WebBlocks {
 
                     output.insertAfter(Items.SNIFFER_EGG, List.of(
                             new ItemStack(SPIDER_EGG),
-                            new ItemStack(SPIDER_EGG_SHELLS)
+                            new ItemStack(SPIDER_EGG_SHELLS),
+                            new ItemStack(SPIDER_SUCCULENT)
+                    ), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+
+                    output.insertAfter(Items.ROOTED_DIRT, List.of(
+                            new ItemStack(DAMP_SOIL),
+                            new ItemStack(SPROUTING_DAMP_SOIL),
+                            new ItemStack(DAMP_SOIL_PATH)
                     ), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 
                     output.insertAfter(Items.PALE_HANGING_MOSS, List.of(
@@ -119,6 +183,14 @@ public class WebBlocks {
 
                     output.insertAfter(Items.CREAKING_HEART, List.of(
                             new ItemStack(SPIDER_EGG)
+                    ), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+                });
+
+        CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.INGREDIENTS)
+                .register(output -> {
+
+                    output.insertAfter(Items.SLIME_BALL, List.of(
+                            new ItemStack(SUCCULENT_GEL)
                     ), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
                 });
     }

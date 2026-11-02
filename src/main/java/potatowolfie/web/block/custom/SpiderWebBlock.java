@@ -1,8 +1,8 @@
 package potatowolfie.web.block.custom;
 
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.effect.MobEffects;
@@ -29,21 +29,22 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
-import potatowolfie.web.entity.custom.SpiderWebBlockEntity;
+import potatowolfie.web.Web;
+import potatowolfie.web.entity.spider_web_block.SpiderWebBlockEntity;
 import potatowolfie.web.item.WebItems;
 
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.FACING;
 
 public class SpiderWebBlock extends BaseEntityBlock {
-    public static final MapCodec<SpiderWebBlock> CODEC = simpleCodec(SpiderWebBlock::new);
     public static final EnumProperty<WebType> WEB_TYPE = EnumProperty.create("web_type", WebType.class);
 
-    @Override
-    public MapCodec<SpiderWebBlock> codec() {
-        return CODEC;
-    }
-
     private static final VoxelShape GROUND_SHAPE = Block.box(-10, 0, -10, 26, 8, 26);
+
+    private static final VoxelShape WALL_SHAPE_NORTH = Block.box(-10, -10, 8, 26, 26, 16);
+    private static final VoxelShape WALL_SHAPE_SOUTH = Block.box(-10, -10, 0, 26, 26, 8);
+    private static final VoxelShape WALL_SHAPE_WEST  = Block.box(8, -10, -10, 16, 26, 26);
+    private static final VoxelShape WALL_SHAPE_EAST  = Block.box(0, -10, -10, 8, 26, 26);
+
     private static final VoxelShape HANGING_SHAPE_NS = Block.box(0, 0, 6, 16, 16, 10);
     private static final VoxelShape HANGING_SHAPE_EW = Block.box(6, 0, 0, 10, 16, 16);
     private static final VoxelShape HANGING_1_SHAPE_NS = Block.box(0, 2, 6, 16, 16, 10);
@@ -105,7 +106,13 @@ public class SpiderWebBlock extends BaseEntityBlock {
         Direction facing = state.getValue(FACING);
 
         if (webType == WebType.GROUND) {
-            return GROUND_SHAPE;
+            return switch (facing) {
+                case NORTH -> WALL_SHAPE_NORTH;
+                case SOUTH -> WALL_SHAPE_SOUTH;
+                case WEST -> WALL_SHAPE_WEST;
+                case EAST -> WALL_SHAPE_EAST;
+                default -> GROUND_SHAPE;
+            };
         }
 
         return switch (webType) {
@@ -158,7 +165,10 @@ public class SpiderWebBlock extends BaseEntityBlock {
                         .setValue(FACING, Direction.UP)
                         .setValue(WEB_TYPE, WebType.GROUND);
             }
-            return null;
+
+            return this.defaultBlockState()
+                    .setValue(FACING, clickedSide)
+                    .setValue(WEB_TYPE, WebType.GROUND);
         }
         return null;
     }
@@ -203,8 +213,8 @@ public class SpiderWebBlock extends BaseEntityBlock {
 
     @Override
     protected BlockState updateShape(BlockState state, LevelReader world, ScheduledTickAccess scheduledTickView,
-                                                   BlockPos pos, Direction direction, BlockPos neighborPos,
-                                                   BlockState neighborState, net.minecraft.util.RandomSource random) {
+                                     BlockPos pos, Direction direction, BlockPos neighborPos,
+                                     BlockState neighborState, net.minecraft.util.RandomSource random) {
         WebType currentType = state.getValue(WEB_TYPE);
 
         if (currentType != WebType.GROUND) {
@@ -294,6 +304,10 @@ public class SpiderWebBlock extends BaseEntityBlock {
 
     @Override
     protected void entityInside(BlockState state, Level world, BlockPos pos, Entity entity, InsideBlockEffectApplier handler, boolean bl) {
+        if (entity.is(Web.WEB_IMMUNE_TAG)) {
+            return;
+        }
+
         WebType webType = state.getValue(WEB_TYPE);
 
         if (webType == WebType.GROUND) {

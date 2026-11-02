@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.resources.Identifier;
 import potatowolfie.web.Web;
+import potatowolfie.web.entity.abominable_spider_queen.AbominableSpiderQueenModel;
 import potatowolfie.web.entity.spider_web_block.SpiderWebBlockEntityModel;
 
 @Environment(EnvType.CLIENT)
@@ -18,6 +19,9 @@ public class WebEntityModelLayers {
 
     public static final ModelLayerLocation BABY_SPIDER =
             new ModelLayerLocation(Identifier.fromNamespaceAndPath(Web.MOD_ID, "baby_spider"), "main");
+
+    public static final ModelLayerLocation ABOMINABLE_SPIDER_QUEEN =
+            new ModelLayerLocation(Identifier.fromNamespaceAndPath(Web.MOD_ID, "abominable_spider_queen"), "main");
 
     public static final ModelLayerLocation SPIDER_WEB_BLOCK =
             new ModelLayerLocation(Identifier.fromNamespaceAndPath(Web.MOD_ID, "spider_web_block"), "main");

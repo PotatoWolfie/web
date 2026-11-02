@@ -25,9 +25,9 @@ public class SpiderRendererMixin {
     @Inject(method = "extractRenderState(Lnet/minecraft/world/entity/monster/spider/Spider;Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;F)V", at = @At("TAIL"))
     private void updateSpiderAnimations(Spider spiderEntity, LivingEntityRenderState renderState, float f, CallbackInfo ci) {
         if (spiderEntity instanceof SpiderAnimationInterface animatedSpider && renderState instanceof SpiderEntityRenderState spiderRenderState) {
-            spiderRenderState.idleAnimationState.copyFrom(animatedSpider.web_1_21_6_7$getIdleAnimationState());
-            spiderRenderState.walkingAnimationState.copyFrom(animatedSpider.web_1_21_6_7$getWalkingAnimationState());
-            spiderRenderState.shootingAnimationState.copyFrom(animatedSpider.web_1_21_6_7$getShootingAnimationState());
+            spiderRenderState.idleAnimationState.copyFrom(animatedSpider.web$getIdleAnimationState());
+            spiderRenderState.walkingAnimationState.copyFrom(animatedSpider.web$getWalkingAnimationState());
+            spiderRenderState.shootingAnimationState.copyFrom(animatedSpider.web$getShootingAnimationState());
         }
     }
 }

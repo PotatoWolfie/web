@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "web:item/abominable_armor_trim_smithing_template"
+  }
+}

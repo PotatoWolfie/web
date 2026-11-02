@@ -1,0 +1,10 @@
+// 26.3	-999999999-01-01T00:00:00	Web/Block Loot Tables
+af40ecca7db3b87279b379e6cdd0f439ada0e43f data/web/loot_table/blocks/damp_soil.json
+af40ecca7db3b87279b379e6cdd0f439ada0e43f data/web/loot_table/blocks/damp_soil_path.json
+a72686efa8148cc22bff08c09bce113ebf555f38 data/web/loot_table/blocks/spider_egg.json
+78dd301c67e47f111be3f853b2eda66945e14ee0 data/web/loot_table/blocks/spider_egg_shells.json
+2d0096d637544a1d59c132cfc2f883fbca3be0d3 data/web/loot_table/blocks/spider_moss.json
+6cbb89dfca79527360c93717e9316e6ccc35957a data/web/loot_table/blocks/spider_succulent.json
+70046434c06d1ed307dc039694b679751874f7b4 data/web/loot_table/blocks/spider_web_block.json
+799747b9318f31dc937607aecbc6348425cc7c10 data/web/loot_table/blocks/sprouting_damp_soil.json
+c24e2a7ff406a52de93e15f91c823a267087a46d data/web/loot_table/blocks/succulent_gel.json

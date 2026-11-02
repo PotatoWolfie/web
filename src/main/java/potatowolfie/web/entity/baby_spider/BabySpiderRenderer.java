@@ -10,7 +10,6 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.resources.Identifier;
 import potatowolfie.web.Web;
 import potatowolfie.web.entity.client.WebEntityModelLayers;
-import potatowolfie.web.entity.custom.BabySpiderEntity;
 
 @Environment(EnvType.CLIENT)
 public class BabySpiderRenderer extends MobRenderer<BabySpiderEntity, BabySpiderRenderState, BabySpiderModel> {

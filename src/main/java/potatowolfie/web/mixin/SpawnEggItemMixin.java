@@ -5,7 +5,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import potatowolfie.web.entity.WebEntities;
-import potatowolfie.web.entity.custom.BabySpiderEntity;
+import potatowolfie.web.entity.baby_spider.BabySpiderEntity;
 
 import java.util.Optional;
 import net.minecraft.server.level.ServerLevel;

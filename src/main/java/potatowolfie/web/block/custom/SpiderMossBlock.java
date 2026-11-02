@@ -1,5 +1,6 @@
 package potatowolfie.web.block.custom;
 
+import net.minecraft.world.level.block.BonemealSource;
 import potatowolfie.web.block.WebBlocks;
 
 import java.util.ArrayList;
@@ -33,16 +34,16 @@ public class SpiderMossBlock extends Block implements BonemealableBlock {
     @Override
     public InteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (stack.is(Items.BONE_MEAL)) {
-            if (!world.isClientSide()) {
-                if (this.isValidBonemealTarget(world, pos, state)) {
-                    this.performBonemeal((ServerLevel) world, world.getRandom(), pos, state);
+            if (world instanceof ServerLevel serverLevel) {
+                if (this.isValidBonemealTarget(serverLevel, pos, state, BonemealSource.INTERACTION)) {
+                    this.performBonemeal(serverLevel, serverLevel.getRandom(), pos, state, BonemealSource.INTERACTION);
 
                     if (!player.getAbilities().instabuild) {
                         stack.shrink(1);
                     }
 
-                    world.playSound(null, pos, SoundEvents.BONE_MEAL_USE, SoundSource.BLOCKS, 1.0F, 1.0F);
-                    ((ServerLevel) world).sendParticles(ParticleTypes.HAPPY_VILLAGER,
+                    serverLevel.playSound(null, pos, SoundEvents.BONE_MEAL_USE, SoundSource.BLOCKS, 1.0F, 1.0F);
+                    serverLevel.sendParticles(ParticleTypes.HAPPY_VILLAGER,
                             pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
                             15, 0.5, 0.5, 0.5, 0.0);
                 }
@@ -54,19 +55,19 @@ public class SpiderMossBlock extends Block implements BonemealableBlock {
     }
 
     @Override
-    public boolean isValidBonemealTarget(LevelReader world, BlockPos pos, BlockState state) {
+    public boolean isValidBonemealTarget(LevelReader world, BlockPos pos, BlockState state, BonemealSource source) {
         return !getValidSpreadPositions(world, pos).isEmpty() || !getValidGrassPositions(world, pos).isEmpty();
     }
 
     @Override
-    public boolean isBonemealSuccess(Level world, RandomSource random, BlockPos pos, BlockState state) {
+    public boolean isBonemealSuccess(Level world, RandomSource random, BlockPos pos, BlockState state, BonemealSource source) {
         return true;
     }
 
     @Override
-    public void performBonemeal(ServerLevel world, RandomSource random, BlockPos pos, BlockState state) {
-        List<BlockPos> validSpreadPositions = getValidSpreadPositions(world, pos);
-        List<BlockPos> validGrassPositions = getValidGrassPositions(world, pos);
+    public void performBonemeal(ServerLevel level, RandomSource random, BlockPos pos, BlockState state, BonemealSource source) {
+        List<BlockPos> validSpreadPositions = getValidSpreadPositions(level, pos);
+        List<BlockPos> validGrassPositions = getValidGrassPositions(level, pos);
 
         if (!validSpreadPositions.isEmpty()) {
             int spreadCount = 3 + random.nextInt(6);
@@ -76,9 +77,9 @@ public class SpiderMossBlock extends Block implements BonemealableBlock {
                 BlockPos targetPos = validSpreadPositions.get(random.nextInt(validSpreadPositions.size()));
                 validSpreadPositions.remove(targetPos);
 
-                world.setBlockAndUpdate(targetPos, this.defaultBlockState());
+                level.setBlockAndUpdate(targetPos, this.defaultBlockState());
 
-                world.sendParticles(ParticleTypes.HAPPY_VILLAGER,
+                level.sendParticles(ParticleTypes.HAPPY_VILLAGER,
                         targetPos.getX() + 0.5, targetPos.getY() + 0.5, targetPos.getZ() + 0.5,
                         8, 0.5, 0.5, 0.5, 0.0);
             }
@@ -92,9 +93,9 @@ public class SpiderMossBlock extends Block implements BonemealableBlock {
                 BlockPos targetPos = validGrassPositions.get(random.nextInt(validGrassPositions.size()));
                 validGrassPositions.remove(targetPos);
 
-                world.setBlockAndUpdate(targetPos, WebBlocks.SPIDER_GRASS.defaultBlockState());
+                level.setBlockAndUpdate(targetPos, WebBlocks.SPIDER_GRASS.defaultBlockState());
 
-                world.sendParticles(ParticleTypes.HAPPY_VILLAGER,
+                level.sendParticles(ParticleTypes.HAPPY_VILLAGER,
                         targetPos.getX() + 0.5, targetPos.getY() + 0.5, targetPos.getZ() + 0.5,
                         5, 0.3, 0.3, 0.3, 0.0);
             }

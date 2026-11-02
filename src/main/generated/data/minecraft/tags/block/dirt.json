@@ -1,5 +1,8 @@
 {
   "values": [
-    "web:spider_moss"
+    "web:spider_moss",
+    "web:damp_soil",
+    "web:sprouting_damp_soil",
+    "web:damp_soil_path"
   ]
 }

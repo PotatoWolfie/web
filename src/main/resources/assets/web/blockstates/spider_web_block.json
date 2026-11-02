@@ -34,6 +34,12 @@
       "model": "web:block/hanging_spider_web_1",
       "y": 270
     },
+    "facing=up,web_type=hanging_1": {
+      "model": "web:block/hanging_spider_web_1"
+    },
+    "facing=down,web_type=hanging_1": {
+      "model": "web:block/hanging_spider_web_1"
+    },
 
     "facing=north,web_type=hanging_top": {
       "model": "web:block/hanging_spider_web_top"
@@ -49,6 +55,12 @@
     "facing=west,web_type=hanging_top": {
       "model": "web:block/hanging_spider_web_top",
       "y": 270
+    },
+    "facing=up,web_type=hanging_top": {
+      "model": "web:block/hanging_spider_web_top"
+    },
+    "facing=down,web_type=hanging_top": {
+      "model": "web:block/hanging_spider_web_top"
     },
 
     "facing=north,web_type=hanging_middle": {
@@ -66,6 +78,12 @@
       "model": "web:block/hanging_spider_web_middle",
       "y": 270
     },
+    "facing=up,web_type=hanging_middle": {
+      "model": "web:block/hanging_spider_web_middle"
+    },
+    "facing=down,web_type=hanging_middle": {
+      "model": "web:block/hanging_spider_web_middle"
+    },
 
     "facing=north,web_type=hanging_tip": {
       "model": "web:block/hanging_spider_web_tip"
@@ -81,6 +99,12 @@
     "facing=west,web_type=hanging_tip": {
       "model": "web:block/hanging_spider_web_tip",
       "y": 270
+    },
+    "facing=up,web_type=hanging_tip": {
+      "model": "web:block/hanging_spider_web_tip"
+    },
+    "facing=down,web_type=hanging_tip": {
+      "model": "web:block/hanging_spider_web_tip"
     }
   }
 }

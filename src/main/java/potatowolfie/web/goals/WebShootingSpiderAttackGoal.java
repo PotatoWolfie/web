@@ -2,7 +2,7 @@ package potatowolfie.web.goals;
 
 import net.minecraft.world.damagesource.DamageSource;
 import potatowolfie.web.Web;
-import potatowolfie.web.entity.custom.SpiderWebEntity;
+import potatowolfie.web.entity.spider_web.SpiderWebEntity;
 import potatowolfie.web.interfaces.WebSpiderInterface;
 
 import java.util.ArrayList;
@@ -183,7 +183,7 @@ public class WebShootingSpiderAttackGoal extends Goal {
         lastKnownGroup = new ArrayList<>(nearbySpiders);
     }
 
-    private boolean shouldUseWebBehavior() {
+    private boolean shouldUseWebs() {
         if (lastKnownGroup.size() == 1) {
             return !isSoloChaseMode;
         }
@@ -276,7 +276,7 @@ public class WebShootingSpiderAttackGoal extends Goal {
 
         if (assignedRole == SpiderRole.CHASER || assignedRole == SpiderRole.BACKUP_CHASER ||
                 (lastKnownGroup.size() == 1 && isSoloChaseMode)) {
-            handleChaserBehavior(target, actualDistance, targetIsTouchingWeb);
+            handleChaser(target, actualDistance, targetIsTouchingWeb);
             return;
         }
 
@@ -285,7 +285,7 @@ public class WebShootingSpiderAttackGoal extends Goal {
             return;
         }
 
-        if (targetIsTouchingWeb && !hasWebSuccessfullyHit && shouldUseWebBehavior()) {
+        if (targetIsTouchingWeb && !hasWebSuccessfullyHit && shouldUseWebs()) {
             hasWebSuccessfullyHit = true;
             postWebChaseTimer = 40 + this.spider.getRandom().nextInt(40);
             transitionToState(SpiderState.POST_WEB_CHASE);
@@ -297,7 +297,7 @@ public class WebShootingSpiderAttackGoal extends Goal {
         }
 
         if (!targetIsTouchingWeb && (currentState == SpiderState.CHARGING || currentState == SpiderState.ATTACKING)) {
-            if (shouldUseWebBehavior()) {
+            if (shouldUseWebs()) {
                 transitionToState(SpiderState.POSITIONING);
             } else if (assignedRole == SpiderRole.WEBBER && lastKnownGroup.size() == 3) {
                 transitionToState(SpiderState.RETREATING);
@@ -328,7 +328,7 @@ public class WebShootingSpiderAttackGoal extends Goal {
         }
     }
 
-    private void handleChaserBehavior(LivingEntity target, double distance, boolean targetIsTouchingWeb) {
+    private void handleChaser(LivingEntity target, double distance, boolean targetIsTouchingWeb) {
         this.spider.getLookControl().setLookAt(target, 30.0f, 30.0f);
         double currentSpeed = getChargingSpeed(target);
 
@@ -450,18 +450,18 @@ public class WebShootingSpiderAttackGoal extends Goal {
             Vec3 approachPos = spiderPos.add(approachDirection.scale(2.0));
 
             this.spider.getNavigation().moveTo(approachPos.x, approachPos.y, approachPos.z, currentSpeed);
-        } else if (canSeeTarget && distance >= 5.0 && distance <= 10.0 && shouldUseWebBehavior()) {
+        } else if (canSeeTarget && distance >= 5.0 && distance <= 10.0 && shouldUseWebs()) {
             transitionToState(SpiderState.SHOOTING);
         }
 
-        if (stateTimer > 20 && shouldUseWebBehavior()) {
+        if (stateTimer > 20 && shouldUseWebs()) {
             transitionToState(SpiderState.SHOOTING);
         }
     }
 
     private void handleShooting(LivingEntity target, double distance, boolean canSeeTarget, boolean targetIsTouchingWeb) {
-        if (!shouldUseWebBehavior()) {
-            handleChaserBehavior(target, distance, targetIsTouchingWeb);
+        if (!shouldUseWebs()) {
+            handleChaser(target, distance, targetIsTouchingWeb);
             return;
         }
 
@@ -526,7 +526,7 @@ public class WebShootingSpiderAttackGoal extends Goal {
 
     private void handleCharging(LivingEntity target, double distance, boolean targetIsTouchingWeb) {
         if (!targetIsTouchingWeb) {
-            if (shouldUseWebBehavior()) {
+            if (shouldUseWebs()) {
                 transitionToState(SpiderState.POSITIONING);
             } else if (assignedRole == SpiderRole.WEBBER && lastKnownGroup.size() == 3) {
                 transitionToState(SpiderState.RETREATING);
@@ -551,7 +551,7 @@ public class WebShootingSpiderAttackGoal extends Goal {
 
     private void handleAttacking(LivingEntity target, double distance, boolean targetIsTouchingWeb) {
         if (!targetIsTouchingWeb) {
-            if (shouldUseWebBehavior()) {
+            if (shouldUseWebs()) {
                 transitionToState(SpiderState.POSITIONING);
             } else if (assignedRole == SpiderRole.WEBBER && lastKnownGroup.size() == 3) {
                 transitionToState(SpiderState.RETREATING);
@@ -617,7 +617,7 @@ public class WebShootingSpiderAttackGoal extends Goal {
             return;
         }
 
-        if (distance >= 8.0 && shouldUseWebBehavior()) {
+        if (distance >= 8.0 && shouldUseWebs()) {
             this.spider.getNavigation().moveTo(target.getX(), target.getY(), target.getZ(), currentSpeed);
         } else {
             this.spider.getNavigation().stop();

@@ -1,0 +1,11 @@
+{
+  "type": "web:nook",
+  "biomes": "#web:has_structure/nook",
+  "step": "underground_structures",
+  "spawn_overrides": {},
+  "terrain_adaptation": "beard_thin",
+  "min_y": -50,
+  "max_y": 30,
+  "y_offset": 0,
+  "min_open_ratio": 0.4
+}

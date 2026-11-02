@@ -5,7 +5,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import potatowolfie.web.entity.custom.SpiderWebBlockEntity;
+import potatowolfie.web.entity.spider_web_block.SpiderWebBlockEntity;
 
 public class WebBlockEntities {
 

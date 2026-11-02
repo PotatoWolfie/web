@@ -9,20 +9,7 @@
       "type": "minecraft:in_square"
     },
     {
-      "type": "minecraft:rarity_filter",
-      "chance": 32
-    },
-    {
-      "type": "minecraft:height_range",
-      "height": {
-        "type": "minecraft:uniform",
-        "max_inclusive": {
-          "absolute": 55
-        },
-        "min_inclusive": {
-          "absolute": -64
-        }
-      }
+      "type": "web:configurable_rarity_filter"
     },
     {
       "type": "minecraft:biome"
